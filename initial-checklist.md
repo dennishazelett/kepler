@@ -6,23 +6,23 @@ Use this temporary checklist to track the initial creation of files for the Kepl
 
 - [x] `README.md`
 - [x] `LICENSE`
-- [ ] `CONTRIBUTING.md`
-- [ ] `CODE_OF_CONDUCT.md`
+- [x] `CONTRIBUTING.md`
+- [x] `CODE_OF_CONDUCT.md`
 - [ ] `CHANGELOG.md`
-- [ ] `.gitignore`
+- [x] `.gitignore`
 - [ ] `.editorconfig`
 - [ ] `.pre-commit-config.yaml`
 - [ ] `CITATION.cff`
 
 ## `docs/`
 
-- [x] `docs/project-charter.md`
-- [x] `docs/scientific-program.md`
-- [ ] `docs/pedagogical-goals.md`
-- [x] `docs/measurement-model.md`
-- [ ] `docs/roadmap.md`
-- [ ] `docs/glossary.md`
-- [ ] `docs/philosophy.md`
+ - [x] `docs/project-charter.md`
+ - [x] `docs/scientific-program.md`
+ - [ ] `docs/pedagogical-goals.md`
+ - [x] `docs/measurement-model.md`
+ - [x] `docs/celestial-coordinate-systems.md`
+ - [ ] `docs/roadmap.md`
+ - [x] `docs/glossary.md`
 
 ## `instruments/`
 
@@ -56,10 +56,11 @@ Use this temporary checklist to track the initial creation of files for the Kepl
 - [ ] `protocols/instrument-registration.md`
 - [ ] `protocols/quality-control.md`
 - [ ] `protocols/safety.md`
+- [ ] `protocols/data-submission.md`
 
-## `schemas/`
+## `data/schemas/`
 
-- [ ] `schemas/README.md`
+- [x] `schemas/README.md`
 - [ ] `schemas/observation.schema.json`
 - [ ] `schemas/observer.schema.json`
 - [ ] `schemas/instrument.schema.json`
@@ -67,16 +68,24 @@ Use this temporary checklist to track the initial creation of files for the Kepl
 - [ ] `schemas/site.schema.json`
 - [ ] `schemas/course-run.schema.json`
 - [ ] `schemas/data-dictionary.md`
+- [ ] `schemas/submission.schema.json`
+- [ ] `schemas/data-dictionary.md`
 
-## `data/`
+## data/
 
-- [ ] `data/README.md`
-- [ ] `data/examples/README.md`
-- [ ] `data/examples/observations.csv`
-- [ ] `data/examples/observers.csv`
-- [ ] `data/examples/instruments.csv`
-- [ ] `data/examples/calibrations.csv`
-- [ ] `data/examples/sites.csv`
+- [x] data/README.md
+- [x] data/data-philosophy.md
+- [x] data/survey-specification.md
+- [x] data/identifier-specification.md
+
+### data/build-data/
+
+- [x] validate-survey.py
+- [x] build-survey-archive.md
+
+### data/examples/
+
+- [x] SUR-CAL-2026-001/
 
 ## `simulation/`
 
@@ -190,7 +199,17 @@ Use this temporary checklist to track the initial creation of files for the Kepl
 
 ## `decisions/`
 
-- [ ] `decisions/README.md`
-- [ ] `decisions/0001-project-scope.md`
-- [ ] `decisions/0002-data-contract.md`
-- [ ] `decisions/0003-instrument-philosophy.md`
+ - [ ] `decisions/README.md`
+ - [ ] `decisions/0001-project-scope.md`
+ - [ ] `decisions/0002-data-contract.md`
+ - [ ] `decisions/0003-instrument-philosophy.md`
+ - [ ] `decisions/0004-multiple-learning-paths.md`
+ 
+## Validator improvements
+
+- Summarize repeated errors instead of listing every occurrence.
+- Produce a portable validation.log (no absolute paths).
+- Optionally omit timestamps or provide a `--timestamp` flag.
+- Print schema versions used during validation.
+- Add PASS summary by component (survey, observations, notes, attachments).
+- Return distinct exit codes for schema vs. package errors.

@@ -1,6 +1,7 @@
 ---
-
-# Calibration Campaign 001 — Terrestrial Geometry Validation
+title: "Calibration Campaign 001 — Terrestrial Geometry Validation"
+output: pdf_document
+---
 
 > **Objective**
 >

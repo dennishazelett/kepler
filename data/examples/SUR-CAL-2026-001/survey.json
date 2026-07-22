@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "survey_id": "SUR-CAL-2026-001",
+  "title": "Terrestrial Geometry Validation",
+  "survey_type": "instrument_calibration",
+  "scientific_question": "Given a known terrestrial reference, how does the observer–instrument measurement system behave?",
+
+  "observer_ids": [
+    "OBS-0001"
+  ],
+
+  "instrument_instance_ids": [
+    "INS-0001"
+  ],
+
+  "protocol_id": "cross-staff-calibration-campaign-001",
+  "protocol_version": "0.1",
+
+  "observation_specification": {
+    "name": "cross-staff-observation",
+    "version": "0.1"
+  },
+
+  "site_id": null,
+
+  "started_at": "2026-07-21",
+  "ended_at": "2026-07-21",
+  "submitted_at": null,
+
+  "attachments": [
+    {
+      "attachment_id": "ATT-0001",
+      "path": "attachments/calibration-range.jpg",
+      "description": "Photograph of the terrestrial calibration range."
+    },
+    {
+      "attachment_id": "ATT-0002",
+      "path": "attachments/assembled_crossstaff.jpg",
+      "description": "Photograph of the assembled cross-staff."
+    },
+    {
+      "attachment_id": "ATT-0003",
+      "path": "attachments/crosspiece_detail.jpg",
+      "description": "Photograph showing the crosspiece and fiducial markings."
+    }
+  ]
+}

@@ -2,11 +2,11 @@
 
 **Learning science by doing science.**
 
-Kepler is an open educational and research project that uses naked-eye astronomy to teach scientific measurement, statistical inference, machine learning, and reproducible research.
+Kepler is an open educational and research project that uses naked-eye astronomy to teach scientific measurement and the computational sciences—from statistical inference to modern machine learning and artificial intelligence—through reproducible observational research.
 
-Participants build simple astronomical instruments from inexpensive materials, make observations of the night sky, and contribute those observations to a growing shared dataset. Those measurements become the foundation for exploring a wide range of inferential methods, from descriptive statistics to Bayesian hierarchical models and modern machine learning.
+Participants build simple astronomical instruments from inexpensive materials, make observations of the night sky, and contribute those observations to a growing shared dataset. Those measurements become the foundation for exploring a wide range of inferential methods while developing the practices of reproducible scientific investigation.
 
-The project is inspired by the work of Tycho Brahe and Johannes Kepler, but its purpose is not historical reenactment. Instead, it recreates one of the central challenges of science:
+The project culminates not simply in models or predictions, but in scientific explanation. Participants evaluate competing hypotheses, communicate evidence, and produce scientific writing that justifies their conclusions. Many investigations invite participants to reexamine historical astronomical claims using modern standards of evidence, drawing their own conclusions from observations rather than reproducing established narratives.
 
 > **How can we infer the hidden structure of the world from imperfect observations?**
 
@@ -49,7 +49,11 @@ Dataset
 Inference
       ↓
 Scientific Understanding
+      ↓
+Scientific Communication
 ```
+
+Scientific understanding is not complete until it can be communicated, scrutinized, and reproduced by others.
 
 Every component of this repository exists to support one or more stages of that process.
 
@@ -124,12 +128,11 @@ All aspects of the project—including instrument designs, observation protocols
 The repository is organized around the measurement process rather than around a particular software language or statistical framework.
 
 | Directory | Purpose |
-|----|----|
+|------------------------------------|------------------------------------|
 | [`docs/`](docs/) | Project vision and conceptual documentation |
 | [`instruments/`](instruments/) | Instrument designs, build guides, and calibration procedures |
 | [`protocols/`](protocols/) | Standardized observation and quality-control procedures |
-| [`schemas/`](schemas/) | Data definitions and validation schemas |
-| [`data/`](data/) | Example, synthetic, and processed datasets |
+| [`data/`](data/) | Data contract, schemas, example surveys, and validation tooling |
 | [`simulation/`](simulation/) | Synthetic data generation and measurement-process simulation |
 | [`src/`](src/) | Core software utilities |
 | [`inference/`](inference/) | Statistical and machine learning methods |
@@ -143,18 +146,19 @@ The repository is organized around the measurement process rather than around a 
 
 Kepler is in active early development.
 
-The current focus is establishing:
+The repository already includes:
 
-- project architecture,
-- measurement protocols,
-- instrument designs,
-- data standards,
-- simulation framework,
-- reproducible software infrastructure.
+- a complete cross-staff instrument design and build guide,
+- a validated calibration survey,
+- an initial data specification and JSON schemas,
+- survey validation tools,
+- contributor documentation.
 
-Development priorities and longer-term milestones are maintained in:
+The project will continue to evolve as additional instruments, observation protocols, datasets, simulations, and educational materials are developed.
 
-- [`docs/roadmap.md`](docs/roadmap.md)
+The repository already contains a complete reference implementation of the initial data contract, including a validated cross-staff calibration survey.
+
+Development priorities and longer-term milestones are still being defined.
 
 ------------------------------------------------------------------------
 
@@ -164,8 +168,8 @@ If you are new to the project, the recommended reading order is:
 
 1.  [`docs/project-charter.md`](docs/project-charter.md)
 2.  [`docs/measurement-model.md`](docs/measurement-model.md)
-3.  [`docs/scientific-questions.md`](docs/scientific-questions.md)
-4.  [`docs/pedagogical-goals.md`](docs/pedagogical-goals.md)
+3.  [`docs/celestial-coordinate-systems.md`](docs/celestial-coordinate-systems.md)
+4.  [`instruments/cross-staff/README.md`](instruments/cross-staff/README.md)
 
 These documents describe the motivation, conceptual framework, and long-term direction of the project.
 
@@ -188,17 +192,17 @@ before submitting changes.
 
 # Citation
 
-If you use Kepler in research or teaching, please cite the project using the metadata provided in:
+If you use Kepler in research or teaching, please cite the Git repository.
 
-- [`CITATION.cff`](CITATION.cff)
+A formal `CITATION.cff` file and versioned citation guidance will be added before the first public release.
 
 ------------------------------------------------------------------------
 
 # License
 
-This project is released under the terms described in:
+Kepler is released under the terms of the MIT License.
 
-- [`LICENSE`](LICENSE)
+See [\`LICENSE\`](LICENSE) for the full license text.
 
 ------------------------------------------------------------------------
 
