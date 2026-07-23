@@ -12,6 +12,16 @@ The project culminates not simply in models or predictions, but in scientific ex
 
 ------------------------------------------------------------------------
 
+# What is Kepler?
+
+Kepler supports two complementary forms of scientific investigation.
+
+Foundational investigations develop observational skill through guided studies of the sky.
+
+Claim investigations invite participants to evaluate historically significant scientific claims using investigations of their own design.
+
+------------------------------------------------------------------------
+
 # Why Kepler?
 
 Modern science education often presents scientific knowledge as a collection of established facts. Kepler approaches science differently.

@@ -32,6 +32,8 @@ Dataset
 Inference
       ↓
 Scientific Understanding
+      ↓
+Scientific Communication
 ```
 
 Each stage introduces information while potentially introducing uncertainty, bias, or error.
@@ -191,6 +193,18 @@ The project therefore emphasizes scientific reasoning over obtaining correct ans
 
 ------------------------------------------------------------------------
 
+# Stage 9 — Scientific Communication
+
+Scientific understanding becomes durable only when it can be communicated.
+
+Participants are encouraged to communicate not only their conclusions, but also the observations, assumptions, methods, uncertainties, and reasoning that produced them.
+
+Communication allows investigations to be examined, reproduced, criticized, refined, and extended by others.
+
+Scientific arguments therefore become part of the measurement process rather than merely a final report.
+
+------------------------------------------------------------------------
+
 # Simulation
 
 Simulation occupies a unique role within the project.
@@ -226,6 +240,8 @@ Models are built to explain measurements rather than generate them.
 Raw observations should never be overwritten.
 
 Derived quantities should remain reproducible from original measurements.
+
+Shared community standards exist to make independently collected observations interoperable while preserving the provenance of every measurement.
 
 ## Model uncertainty
 

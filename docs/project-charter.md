@@ -32,6 +32,25 @@ Kepler is designed to make that process visible.
 
 ---
 
+## Scientific inquiry requires intellectual freedom.
+
+Scientific understanding cannot be reduced to following prescribed procedures.
+
+Kepler provides reliable instruments, reproducible methods, and carefully documented observations, but deliberately avoids prescribing a single path from evidence to conclusion.
+
+Participants are encouraged to develop their own observational strategies, analytical methods, and scientific arguments. Different investigators may approach the same claim in different ways, collect different evidence, and communicate different lines of reasoning.
+
+This diversity of scientific approaches is not an unintended consequence of the project—it is one of its primary educational objectives.
+
+Kepler therefore supports two complementary modes of scientific learning:
+
+- **Guided investigations** develop practical skills in observation, measurement, calibration, data analysis, and scientific communication.
+- **Open investigations** challenge participants to evaluate scientific claims using evidence they collect and interpret for themselves.
+
+The purpose of guided investigations is to build competence. The purpose of open investigations is to cultivate scientific independence.
+
+---
+
 ## Measurement comes before inference.
 
 Every scientific conclusion begins with a measurement.
@@ -84,11 +103,11 @@ Participants are therefore encouraged to document not only their conclusions but
 
 Scientific history is not included for context or inspiration alone.
 
-It demonstrates how knowledge evolves.
+It demonstrates how scientific knowledge evolves.
 
-By retracing the observational challenges faced by astronomers such as Tycho Brahe and Johannes Kepler, participants encounter the same fundamental problems of measurement, uncertainty, and inference that continue to define modern science.
+Historical scientific claims provide opportunities for modern investigators to engage with the same observational challenges faced by earlier scientists. Rather than reproducing historical experiments step by step, participants are encouraged to design their own investigations using accessible instruments and evidence they collect themselves.
 
-History provides evidence about how scientific ideas develop.
+History provides both context and opportunity for scientific inquiry.
 
 ---
 
@@ -106,13 +125,13 @@ Kepler focuses on the complete scientific measurement process.
 
 This includes:
 
-* building simple observational instruments;
-* developing standardized observation protocols;
-* collecting and curating longitudinal observational datasets;
-* modeling measurement uncertainty;
-* comparing statistical and machine learning approaches;
-* teaching reproducible scientific workflows;
-* documenting the reasoning behind scientific conclusions.
+- building simple observational instruments;
+- developing standardized observation protocols;
+- collecting and curating longitudinal observational datasets;
+- modeling measurement uncertainty;
+- comparing statistical and machine learning approaches;
+- teaching reproducible scientific workflows;
+- documenting the reasoning behind scientific conclusions.
 
 The project emphasizes methods that remain accessible to participants with minimal financial resources.
 
@@ -122,12 +141,12 @@ The project emphasizes methods that remain accessible to participants with minim
 
 Kepler is not intended to become:
 
-* professional astronomical software;
-* a replacement for modern observatories;
-* a platform requiring specialized or expensive equipment;
-* an astronomy visualization application;
-* an automated telescope control system;
-* a repository of disconnected machine learning demonstrations.
+- professional astronomical software;
+- a replacement for modern observatories;
+- a platform requiring specialized or expensive equipment;
+- an astronomy visualization application;
+- an automated telescope control system;
+- a repository of disconnected machine learning demonstrations.
 
 Technology should lower barriers to participation rather than raise them.
 
@@ -137,10 +156,10 @@ Technology should lower barriers to participation rather than raise them.
 
 The initial audience consists primarily of:
 
-* undergraduate students;
-* motivated high school students with interests in STEM;
-* educators seeking authentic scientific learning experiences;
-* researchers interested in statistical inference, measurement, and scientific pedagogy.
+- undergraduate students;
+- motivated high school students with interests in STEM;
+- educators seeking authentic scientific learning experiences;
+- researchers interested in statistical inference, measurement, and scientific pedagogy.
 
 The project is intentionally designed so that participants with little prior experience can contribute meaningful observations while continuing to challenge advanced learners.
 
@@ -152,20 +171,21 @@ Kepler will be considered successful if participants leave with a fundamentally 
 
 Specifically, they should recognize that:
 
-* scientific knowledge is constructed through evidence rather than received as authority;
-* measurements require careful design and interpretation;
-* uncertainty is unavoidable and informative;
-* models embody assumptions rather than certainty;
-* competing explanations can be evaluated using data;
-* communication is central to scientific progress.
+- scientific knowledge is constructed through evidence rather than received as authority;
+- measurements require careful design and interpretation;
+- uncertainty is unavoidable and informative;
+- models embody assumptions rather than certainty;
+- competing explanations can be evaluated using data;
+- communication is central to scientific progress;
+- there is rarely a single prescribed path from evidence to understanding.
 
 Secondary indicators of success include:
 
-* a growing longitudinal observational dataset;
-* widespread use in teaching statistics, machine learning, and artificial intelligence;
-* contributions from an active open-source community;
-* reproducible analyses that illustrate diverse approaches to inference;
-* unexpected discoveries emerging from community observations.
+- a growing longitudinal observational dataset;
+- widespread use in teaching statistics, machine learning, and artificial intelligence;
+- contributions from an active open-source community;
+- reproducible analyses illustrating diverse approaches to inference;
+- novel investigations and unexpected discoveries emerging from community observations.
 
 ---
 
@@ -183,7 +203,7 @@ Project decisions should be guided by the principles articulated in this charter
 
 Astronomy is the first domain explored by Kepler because it combines profound scientific questions with observations that remain accessible using simple instruments.
 
-The broader ideas developed here—measurement, uncertainty, modeling, inference, and communication—extend well beyond astronomy.
+The broader ideas developed here—measurement, uncertainty, modeling, inference, communication, and investigator-driven scientific reasoning—extend well beyond astronomy.
 
 Future projects may apply the same philosophy to other scientific disciplines while preserving the principles established by this charter.
 
