@@ -43,6 +43,20 @@ The instrument consists of:
 - a sighting mechanism
 - a plumb line suspended from the center of the arc
 
+### Sighting Mechanism
+
+Numerous sighting mechanisms have historically been employed, including simple edge sights, pin sights, notch-and-post sights, and tube sights.
+
+The Kepler design does not prescribe a single solution. Candidate designs will be evaluated according to:
+
+- repeatability of alignment
+- ease of construction
+- durability
+- user comfort
+- achievable measurement precision
+
+A short tube or drinking straw is considered a promising modern adaptation because it provides a well-defined line of sight while remaining inexpensive and easy to replace. The final design will be selected following prototype evaluation.
+
 When the observer sights an object, gravity causes the plumb line to remain vertical while the instrument rotates with the observer.
 
 The intersection of the plumb line with the graduated scale provides a direct measurement of the object's elevation angle above the horizon.
@@ -99,7 +113,21 @@ Historical inspiration informs the design but does not constrain it.
 
 ------------------------------------------------------------------------
 
-# Expected Accuracy
+# Mechanical Design Considerations
+
+Although historically simple, the performance of a quadrant depends critically on a small number of mechanical details.
+
+Particular attention should be given to:
+
+- accurate placement of the plumb-line pivot;
+- freedom of motion of the plumb line;
+- rigidity of the instrument body;
+- repeatability of the sighting mechanism;
+- readability of the graduated scale.
+
+The plumb line should pivot freely about a well-defined point located at the center of the graduated arc. Designs that introduce friction, shifting pivot locations, or interference with the plumb line should be avoided.
+
+These features are expected to have a greater influence on measurement quality than historical authenticity.Expected Accuracy
 
 The attainable accuracy of a quadrant depends upon numerous factors including:
 
@@ -176,6 +204,19 @@ Readers interested in the history and development of quadrants may find the foll
 - **Smithsonian – Surveying and Navigational Instruments**\
   An overview of historical astronomical and surveying instruments, including Gunter quadrants and related trigonometric devices.\
   <https://www.si.edu/spotlight/trigonometry-in-the-plane/planine-trigonometry-surveying> :contentReference[oaicite:3]{index="3"}
+
+## Educational Construction References
+
+The following resources illustrate several practical approaches to constructing educational quadrants. These references are provided as design inspiration rather than canonical Kepler builds.
+
+- NASA Marshall Space Flight Center – *Build a Simple Quadrant (Simple Sextant Activity)*
+  https://solarscience.msfc.nasa.gov/suntime/sxtnt_tchr.pdf
+
+- Nomad Press – *Make a Quadrant*
+  https://nomadpress.net/wp-content/uploads/2014/04/NP_ActivityPrintOut_Quadrant_ExplorersoftheNewWorld.pdf
+
+- YouTube – Educational quadrant construction demonstrations
+  (useful for comparing sighting mechanisms and construction techniques; individual designs should be evaluated critically before adoption)
 
 ## History of Scientific Observation
 
