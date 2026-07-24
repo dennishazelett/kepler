@@ -6,7 +6,15 @@
 
 ------------------------------------------------------------------------
 
+# Historical Reflection
+
+*More than a thousand years ago, Maya astronomers recorded generations of observations in manuscripts now known as the codices. Among them, the Dresden Codex preserves remarkably accurate records of the motions of Venus and other celestial phenomena, demonstrating that careful observations accumulated over many years can reveal patterns invisible in a single season.*
+
+*Your Observer's Atlas begins in the same spirit. It is not a book of facts copied from others, but a growing record of your own observations. Like the Maya codices, its value comes not from any single page, but from the patient accumulation of evidence over time.*
+
 # Purpose
+
+**This foundational investigation is the keystone of the Kepler scientific program.**
 
 Every scientific investigation in Kepler begins with the same question:
 

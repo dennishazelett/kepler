@@ -16,112 +16,35 @@ Your objective is to determine what conclusions are justified by observations th
 
 ------------------------------------------------------------------------
 
-# Historical Context
+# Historical Reflection
 
-For much of recorded history, a geocentric universe was not an irrational belief. It was a successful scientific model that explained many everyday observations.
+*For much of recorded history, a geocentric universe was not simply a religious belief or a philosophical preference. It was a successful scientific model. The Earth appears motionless beneath our feet. The Sun rises and sets. The stars wheel overhead each night. The planets follow recognizable paths across the sky. From ordinary observation alone, the Earth seems to stand still while the heavens move.*
 
-The Earth appears motionless beneath our feet.
+*In the second century CE, Claudius Ptolemy brought centuries of Greek astronomical thought together in the* Almagest, *constructing a mathematical geocentric model capable of predicting the motions of the Sun, Moon, and planets with remarkable success. For more than a thousand years, his work provided one of humanity's most powerful scientific descriptions of the cosmos.*
 
-The Sun rises and sets.
+*Centuries later, Nicolaus Copernicus proposed a Sun-centered alternative. Johannes Kepler refined that model using Tycho Brahe's extraordinary observations, while Galileo's telescopic discoveries challenged long-held assumptions about the heavens. These developments eventually transformed astronomy—but they did not erase the fact that the geocentric model had once explained an enormous body of evidence.*
 
-The stars rotate around the sky each night.
-
-The planets move in complex but predictable paths.
-
-These observations naturally suggest that the heavens move while the Earth remains at rest.
-
-Your task is to approach this claim as an investigator rather than as someone who already knows the modern consensus.
-
-------------------------------------------------------------------------
-
-# Available Resources
-
-You may use any combination of:
-
-- naked-eye observations
-- Kepler reference instruments
-- observations collected by the Kepler community
-- observations you collect yourself
-- historical records (when explicitly identified)
-- mathematical reasoning
-- statistical analysis
-- simulation
-- any other transparent and reproducible method
-
-------------------------------------------------------------------------
-
-# Ground Rules
-
-These are not intended to restrict creativity.
-
-They exist to ensure that different investigations remain scientifically comparable.
-
-1.  Clearly state the observations upon which your conclusions depend.
-
-2.  Distinguish between **observation**, **interpretation**, and **assumption**.
-
-3.  Record uncertainty whenever possible.
-
-4.  Preserve primary observations without modification.
-
-5.  Clearly identify observations collected by you and those obtained from community datasets.
-
-6.  Make your reasoning transparent enough that another investigator could critique or reproduce it.
-
-7.  Conclusions should be proportional to the available evidence.
+*This investigation asks you to begin where history once began: not with the modern answer, but with the observations. Assume nothing beyond what your own evidence can justify.*
 
 ------------------------------------------------------------------------
 
 # The Challenge
 
-Design your own investigation.
+Begin by treating the scientific claim as provisionally true.
 
-Consider questions such as:
+Ask yourself:
 
-**- If the geocentric model were an accurate description of the universe, what observations would you expect to make using data collected with Kepler instruments?** (This is the key)
+- **If the geocentric model were an accurate description of the universe, what observations should I expect to make using Kepler observations?**
+- Which of those predictions can I test?
+- Which observations agree with those predictions?
+- Which observations appear inconsistent with them?
+- Are those inconsistencies sufficient to reject the claim, or could they reasonably arise from measurement uncertainty, incomplete observations, or assumptions in my investigation?
+- If the claim no longer provides an adequate explanation, what alternative models deserve further investigation?
 
-\- What observations might distinguish a geocentric model from competing explanations? And are there competing explanations other than the obvious one (i.e. heliocentrism)?
+Scientific claims are not rejected because a better idea exists.
 
-\- What observations would increase your confidence?
+They are rejected because their predictions no longer agree with observation.
 
-\- What observations would challenge your current interpretation?
+Your task is not to defend or attack the geocentric model.
 
-\- What additional evidence would you like to collect?
-
-These questions are suggestions, not requirements.
-
-There is no prescribed experimental procedure.
-
-------------------------------------------------------------------------
-
-# Deliverable
-
-Produce a scientific argument in paper form that includes:
-
-- the claim under investigation;
-- your observations;
-- the methods you employed;
-- your reasoning;
-- uncertainties and limitations;
-- the conclusions you believe are justified by the available evidence.
-
-The goal is not to reach a predetermined answer.
-
-The goal is to construct the strongest scientific argument your evidence can support.
-
-------------------------------------------------------------------------
-
-# Reflection
-
-Scientific investigations rarely conclude with complete certainty.
-
-Before considering your investigation complete, reflect on the following.
-
-- What assumptions did your investigation depend upon?
-- What observations were most influential?
-- What evidence would most change your mind?
-- How might another investigator reasonably approach this claim differently?
-
-Science advances through many independent investigations, not a single correct experiment.
-
-Your investigation becomes one contribution to that ongoing process.
+Your task is to determine whether your observations continue to support it.
