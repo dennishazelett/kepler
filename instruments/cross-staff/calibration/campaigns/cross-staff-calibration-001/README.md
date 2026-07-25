@@ -43,16 +43,15 @@ Only the raw observations belong in the canonical survey package.
 
 Conceptual documents for this project are stored here.
 
-Generated analysis artifacts are organized by type under the top-level `analysis/` directories.
+Generated analysis artifacts are organized within this campaign directory, with notebooks under `notebooks/` and derived tables under `tables/`.
 
 | Directory | Purpose |
 |-----------|---------|
-| `analysis/notebooks/cross-staff-calibration-001/` | Exploratory notebooks |
-| `analysis/scripts/cross-staff-calibration-001/` | Reproducible analysis scripts |
-| `analysis/figures/cross-staff-calibration-001/` | Generated figures |
-| `analysis/tables/cross-staff-calibration-001/` | Derived tables |
-| `analysis/reports/cross-staff-calibration-001/` | Written reports |
-
+| `scripts/` | Reproducible analysis scripts |
+| `figures/` | Generated figures |
+| `tables/` | Derived tables |
+| `reports/` | Written reports |
+| `notebooks/` | Exploratory notebooks |
 ---
 
 # Planned Analyses

@@ -85,7 +85,7 @@ The complete preparation workflow should be executable using version-controlled 
 Prepared datasets should be written to:
 
 ```         
-analysis/tables/cross-staff-calibration-001/
+tables/
 ```
 
 These tables are considered temporary analytical products and may be regenerated at any time.

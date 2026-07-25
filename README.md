@@ -129,7 +129,7 @@ No single framework is considered the "correct" approach.
 
 ## 4. Promote Reproducible Research
 
-All aspects of the project—including instrument designs, observation protocols, data schemas, simulations, analyses, and software—are version controlled and openly documented.
+All aspects of the project—including instrument designs, observation protocols, data schemas, simulations, inference methods, investigations, workflows, and software—are version controlled and openly documented.
 
 ------------------------------------------------------------------------
 
@@ -146,9 +146,11 @@ The repository is organized around the measurement process rather than around a 
 | [`simulation/`](simulation/) | Synthetic data generation and measurement-process simulation |
 | [`src/`](src/) | Core software utilities |
 | [`inference/`](inference/) | Statistical and machine learning methods |
-| [`analysis/`](analysis/) | Reproducible analyses and reports |
 | [`course/`](course/) | Educational materials |
 | [`tests/`](tests/) | Validation and reproducibility tests |
+| [`experiments/`](experiments/) | Benchmarks, ablations, model-recovery studies, and controlled computational experiments |
+| [`investigations/`](investigations/) | Foundational and claim investigations, including project-specific guidance and analyses |
+| [`workflows/`](workflows/) | Reference workflows for composing Kepler data, software, and inference components |
 
 ------------------------------------------------------------------------
 

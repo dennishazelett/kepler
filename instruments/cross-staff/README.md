@@ -164,9 +164,17 @@ This directory contains the complete specification for the Kepler Cross-staff.
 
 * **`design.md`** — engineering design and measurement geometry
 * **`build-guide.md`** — step-by-step construction instructions
-* **`calibration.md`** — calibration procedures and uncertainty estimation
+* **`calibration/`** — calibration procedures, calibration campaigns, and supporting analyses
 
-Together these documents define the current reference implementation of the instrument.
+The calibration directory contains:
+
+* the calibration protocol;
+* calibration campaign documentation;
+* source datasets;
+* exploratory notebooks;
+* derived analysis tables.
+
+Together these resources define, validate, and document the current reference implementation of the instrument.
 
 ---
 

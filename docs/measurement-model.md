@@ -8,6 +8,8 @@ The Kepler project is built around a single idea:
 
 The project uses naked-eye astronomy as a concrete, historically authentic setting in which participants build simple instruments, collect observations, and use statistical and machine learning methods to infer underlying physical processes. The emphasis is not on reproducing professional astronomy, but on understanding how evidence is generated, evaluated, and accumulated.
 
+Kepler views individual observations not as direct measurements of the latent state of the physical world, but as constraints upon that state. A measured altitude, azimuth, or angular separation does not directly determine the position of a celestial object. Instead, each observation contributes evidence that narrows the range of possible explanations. Scientific understanding emerges by combining many such constraints through inference.
+
 This document defines the conceptual measurement model that underlies every component of the project. Instrument design, observation protocols, data schemas, simulation, statistical inference, machine learning, and course materials should all remain consistent with this model.
 
 ------------------------------------------------------------------------
@@ -55,7 +57,7 @@ Examples include:
 - lunar position
 - stellar reference frame
 
-These quantities are treated as latent variables. Participants never observe them directly.
+These quantities together define the **latent state** of the physical world. Participants never observe that state directly. Participants never observe them directly.
 
 ------------------------------------------------------------------------
 
@@ -119,13 +121,35 @@ This variability is a feature of the project rather than a defect.
 
 Measurements are the primary observations recorded by the project.
 
+Each measurement records a property of the observable sky under a particular set of observational circumstances.
+
 Examples include:
 
 - angular separations
+
 - altitudes
+
 - azimuths
+
 - timestamps
+
 - calibration measurements
+
+Although these measurements are often treated as if they directly determine celestial coordinates, Kepler adopts a different perspective.
+
+**Each measurement is a constraint on the unknown state of the physical world.**
+
+For example:
+
+- an altitude measurement constrains an object's possible location on the celestial sphere;
+
+- an azimuth measurement contributes an independent directional constraint;
+
+- an angular separation constrains the relative positions of two objects.
+
+No single observation completely determines the latent state.
+
+Scientific understanding emerges by combining many independent constraints collected at different times, from different locations, using different instruments, and by different observers.
 
 Every measurement is accompanied by metadata describing the circumstances under which it was obtained.
 
@@ -155,7 +179,7 @@ The dataset therefore represents both astronomical observations and the complete
 
 # Stage 7 — Inference
 
-Inference attempts to recover latent quantities from observed measurements.
+Inference combines observational constraints to estimate the latent state of the physical world.
 
 Multiple approaches are intentionally supported.
 
@@ -209,7 +233,7 @@ Scientific arguments therefore become part of the measurement process rather tha
 
 Simulation occupies a unique role within the project.
 
-A simulator begins with known latent quantities and generates synthetic observations by modeling each stage of the measurement process.
+A simulator begins with a known latent state and generates synthetic observations by modeling each stage of the measurement process.
 
 This allows inference methods to be evaluated under controlled conditions where the underlying truth is known.
 
@@ -257,7 +281,7 @@ Architectural decisions should avoid privileging any single implementation or so
 
 ## Build from simple components
 
-The project should begin with simple instruments, simple observations, and simple analyses before introducing additional complexity.
+The project should begin with simple instruments, simple observations, and simple inferential approaches before introducing additional complexity.
 
 ------------------------------------------------------------------------
 
