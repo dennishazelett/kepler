@@ -39,6 +39,13 @@
       "observation_specification": {
         "name": "compass-observation",
         "version": "0.1"
+      },
+      "measurement_reference": {
+        "azimuth_reference": "magnetic_north",
+        "magnetic_declination_deg": 11.7,
+        "declination_sign_convention": "east_positive",
+        "evaluated_at": "2026-07-26T06:00:00Z",
+        "source": "WMM2025"
       }
     }
   ],

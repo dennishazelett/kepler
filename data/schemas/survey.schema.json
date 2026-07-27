@@ -163,6 +163,41 @@
                 "minLength": 1
               }
             }
+          },
+          
+          "measurement_reference": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "azimuth_reference",
+              "magnetic_declination_deg",
+              "declination_sign_convention"
+            ],
+            "properties": {
+              "azimuth_reference": {
+                "type": "string",
+                "enum": [
+                  "magnetic_north"
+                ]
+              },
+              "magnetic_declination_deg": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180,
+                "description": "East-positive magnetic declination. True azimuth equals magnetic azimuth plus magnetic declination."
+              },
+              "declination_sign_convention": {
+                "const": "east_positive"
+              },
+              "evaluated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         }
       }

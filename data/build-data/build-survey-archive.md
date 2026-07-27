@@ -27,6 +27,18 @@ Site:
 Date(s):
 Schema Version:
 
+### Observation Table Metadata:
+
+- Path:
+- Instrument Instance ID:
+- Observation Specification Name:
+- Observation Specification Version:
+- Azimuth Reference, if applicable:
+- Magnetic Declination (degrees), if applicable:
+- Declination Sign Convention:
+- Declination Evaluation Time:
+- Declination Source:
+
 ## Requirements
 
 1. Preserve only raw observations.
@@ -39,15 +51,31 @@ Schema Version:
 8. Do not invent metadata or observations. If required information is missing, leave a placeholder or report it.
 9. Produce a survey that conforms to the attached Survey Specification and applicable Observation Specification.
 
+For compass observation tables recorded relative to magnetic north, include
+table-level `measurement_reference` metadata in `survey.json`, including:
+
+- `azimuth_reference`
+- `magnetic_declination_deg`
+- `declination_sign_convention`
+- optional `evaluated_at`
+- optional `source`
+
+Omit `measurement_reference` for observation tables that do not require additional measurement-context metadata.
+
 ## Output
 
-Generate the following directory:
+Generate one canonical observation table for each instrument/observation
+specification represented in the survey. List every table in
+`survey.json.observation_tables`.
 
 ```text
 <survey-id>/
 ├── README.md
 ├── survey.json
-├── observations.csv
+├── observations/
+│   ├── <table-1>.csv
+│   ├── <table-2>.csv
+│   └── ...
 ├── notes.csv
 ├── attachments/
 └── checksums.sha256
@@ -69,9 +97,9 @@ Summarize:
 
 Record survey metadata only.
 
-### observations.csv
+### Observation tables
 
-Canonical raw observation table.
+One canonical raw observation table is produced for each observation specification represented in the survey.
 
 Requirements:
 
@@ -94,7 +122,8 @@ The original observational data supplied by the contributor may be included unch
 
 ### checksums.sha256
 
-Generate SHA-256 hashes for every file in the survey package.
+Generate SHA-256 hashes for all stable archive files, excluding
+`checksums.sha256`, `validation.log`, and platform metadata such as `.DS_Store`.
 
 ## Final Report
 
@@ -110,6 +139,6 @@ Before declaring the survey package complete, verify that:
 
 * all physical quantities use the canonical units required by the Observation Specification;
 * required metadata are present;
-* the observation table conforms to the applicable Observation Specification;
+* each observation table conforms to its applicable Observation Specification;
 * the survey metadata conform to the Survey Specification;
 * the completed survey package is ready for validation.
