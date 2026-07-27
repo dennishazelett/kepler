@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the canonical raw observation format for observations made with a quadrant, including astronomical and calibration observations.
+This document defines the canonical raw observation format for astronomical observations made with a quadrant.
 
 A quadrant observation preserves the instrument-native angular reading obtained for one identified target. Predicted altitude, residuals, celestial coordinates, fitted corrections, and other derived quantities are excluded from the raw observation table.
 
@@ -26,7 +26,7 @@ Required columns, in order:
 | `observation_id` | string | identifier | not applicable | Stable identifier for the observation. |
 | `observer_id` | string | identifier | not applicable | Participant who performed the measurement. |
 | `instrument` | string | categorical value | `quadrant` | Instrument design used for the observation. |
-| `target_id` | string | target label | not applicable | Stable identifier or recorded label for the target intentionally measured by the observer, including celestial objects and calibration reference targets. |
+| `target_id` | string | target label | not applicable | Target name recorded by the observer. |
 | `angle_deg` | number | physical quantity | degree | Raw quadrant angle reading. Positive values represent targets above the instrument's level reference; negative values are permitted when supported by the instrument reading. |
 | `observed_at` | string | temporal value | ISO 8601 date-time | UTC timestamp of the measurement. |
 

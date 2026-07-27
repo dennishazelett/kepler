@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kepler.example/schemas/quadrant-observation.schema.json",
-  "title": "Kepler Quadrant Observation",
-  "description": "Canonical raw row format for astronomical quadrant observations.",
+  "$id": "https://kepler.example/schemas/quadrant-calibration-observation.schema.json",
+  "title": "Kepler Quadrant Calibration Observation",
+  "description": "Canonical raw row format for quadrant calibration observations.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,6 +10,7 @@
     "observer_id",
     "instrument",
     "target_id",
+    "target_vertical_offset_m",
     "angle_deg",
     "observed_at"
   ],
@@ -27,7 +28,14 @@
     },
     "target_id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "Stable identifier or recorded label for the calibration target intentionally measured by the observer."
+    },
+    "target_vertical_offset_m": {
+      "type": "number",
+      "description": "Signed vertical displacement of the calibration target relative to the observer's eye-level reference, in meters. Positive values are above eye level.",
+      "x-kepler-unit": "m",
+      "x-kepler-dimension": "length"
     },
     "angle_deg": {
       "type": "number",

@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kepler.example/schemas/survey.schema.json",
+  "title": "Kepler Survey Metadata",
+  "description": "Metadata describing a Kepler survey package.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "schema_version",
+    "survey_id",
+    "survey_type",
+    "scientific_question",
+    "observer_ids",
+    "observing_location",
+    "observation_tables"
+  ],
+
+  "properties": {
+
+    "schema_version": {
+      "type": "string",
+      "description": "Version of this survey metadata schema.",
+      "pattern": "^0\\.2$"
+    },
+
+    "survey_id": {
+      "type": "string",
+      "description": "Stable identifier assigned to the survey.",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "survey_type": {
+      "type": "string",
+      "description": "Survey classification.",
+      "minLength": 1
+    },
+
+    "scientific_question": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "observer_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^OBS-[0-9]{4}$"
+      }
+    },
+
+    "protocol_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+
+    "protocol_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+
+    "observing_location": {
+      "type": "object",
+      "description": "Geodetic observing location shared by the survey.",
+      "additionalProperties": false,
+      "required": [
+        "latitude_deg",
+        "longitude_deg",
+        "coordinate_reference_system"
+      ],
+      "properties": {
+        "latitude_deg": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+
+        "longitude_deg": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+
+        "elevation_m": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+
+        "coordinate_reference_system": {
+          "type": "string",
+          "enum": [
+            "WGS84"
+          ]
+        }
+      }
+    },
+
+    "working_representation": {
+      "type": "object",
+      "description": "Documents noncanonical working representations used during survey preparation. Submission-ready archives should omit this object because all observations are already represented in canonical Kepler units.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+
+    "observation_tables": {
+      "type": "array",
+      "description": "Instrument-native observation tables contained in the survey.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "instrument_instance_id",
+          "observation_specification"
+        ],
+        "properties": {
+
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative path to the observation table within the survey archive."
+          },
+          
+          "instrument_instance_id": {
+            "type": "string",
+            "pattern": "^INS-[0-9]{4}$"
+          },
+
+          "observation_specification": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "version"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+
+              "version": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          
+          "measurement_reference": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "azimuth_reference",
+              "magnetic_declination_deg",
+              "declination_sign_convention"
+            ],
+            "properties": {
+              "azimuth_reference": {
+                "type": "string",
+                "enum": [
+                  "magnetic_north"
+                ]
+              },
+              "magnetic_declination_deg": {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180,
+                "description": "East-positive magnetic declination. True azimuth equals magnetic azimuth plus magnetic declination."
+              },
+              "declination_sign_convention": {
+                "const": "east_positive"
+              },
+              "evaluated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "site_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+
+    "started_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
+
+    "ended_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
+
+    "submitted_at": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "string",
+          "format": "date-time"
+        }
+      ]
+    },
+
+    "attachments": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "attachment_id",
+          "path",
+          "description"
+        ],
+        "properties": {
+
+          "attachment_id": {
+            "type": "string",
+            "pattern": "^ATT-[0-9]{4}$"
+          },
+
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+
+          "media_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+
+          "sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-fA-F0-9]{64}$"
+          }
+        }
+      }
+    }
+  }
+}
