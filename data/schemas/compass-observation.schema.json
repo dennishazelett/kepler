@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kepler.example/schemas/compass-observation.schema.json",
+  "title": "Kepler Compass Observation",
+  "description": "Canonical raw row format for astronomical compass observations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "observation_id",
+    "observer_id",
+    "instrument",
+    "target_name",
+    "angle_deg",
+    "observed_at"
+  ],
+  "properties": {
+    "observation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "observer_id": {
+      "type": "string",
+      "pattern": "^OBS-[0-9]{4}$"
+    },
+    "instrument": {
+      "const": "compass"
+    },
+    "target_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "angle_deg": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMaximum": 360,
+      "description": "Raw compass bearing in degrees, measured clockwise from the instrument's north reference.",
+      "x-kepler-unit": "deg",
+      "x-kepler-dimension": "angle"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

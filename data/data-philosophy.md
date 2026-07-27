@@ -34,7 +34,7 @@ One observation corresponds to one row in the canonical observation table.
 
 Different instruments measure different physical quantities.
 
-The submission standard preserves those measurements rather than forcing premature translation into a universal representation.
+The submission standard preserves those measurements rather than forcing premature translation into a universal measurement format.
 
 ## Reproducibility
 
@@ -56,6 +56,8 @@ Corrections produce new records.
 The canonical observation table must be directly appendable without manual cleanup.
 
 Every accepted submission conforms to a published schema.
+
+Observation specifications define canonical units and formats. Contributors may work in other units, but submitted observations must be deterministically normalized to the declared canonical representation before validation. This normalization changes representation, not scientific content; original working data and conversion provenance may be preserved with the survey.
 
 ## Derived Data
 

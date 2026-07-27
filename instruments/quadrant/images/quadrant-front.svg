@@ -7,6 +7,9 @@
    id="svg13"
    sodipodi:docname="quadrant-front.svg"
    inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   inkscape:export-filename="quadrant-front.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -22,12 +25,12 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.76288194"
-     inkscape:cx="339.50207"
+     inkscape:cx="338.84666"
      inkscape:cy="453.54331"
      inkscape:window-width="1208"
      inkscape:window-height="905"
-     inkscape:window-x="294"
-     inkscape:window-y="119"
+     inkscape:window-x="197"
+     inkscape:window-y="33"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg13" />
   <defs
@@ -62,124 +65,131 @@
   </defs>
   <!-- Cardboard shelf: the top reference edge of the instrument -->
   <rect
-     x="20"
-     y="45"
-     width="140"
-     height="8"
+     x="-171.14244"
+     y="13.931869"
+     width="117.8814"
+     height="8.0779305"
      class="outline"
-     id="rect1" />
+     id="rect1"
+     transform="rotate(-90)" />
   <!-- Cardboard body: straight machine-cut top edge, square bottom, lower-right 45-degree clearance cut -->
   <path
-     d="M20 53 H160 V92 L81 171 H20 Z"
+     d="M 23.175002,53 H 163.17502 v 39 l -79.000018,79 h -61 z"
      class="outline"
      id="path1" />
   <!-- Straw sight mounted on the rear face, directly beneath and parallel to the shelf -->
   <rect
-     x="32.023491"
-     y="53.751678"
+     x="57.617443"
+     y="-31.396313"
      width="120"
      height="7"
      rx="3.5"
      ry="3.5"
      class="hidden"
-     id="rect2" />
+     id="rect2"
+     transform="rotate(90)" />
   <!-- Printed quadrant mounted below the body top, leaving a structural margin above it -->
   <line
-     x1="35"
+     x1="38.175003"
      y1="61"
-     x2="145"
+     x2="148.17496"
      y2="61"
      class="thin"
      id="line2" />
   <line
-     x1="35"
+     x1="38.175003"
      y1="61"
-     x2="35"
+     x2="38.175003"
      y2="171"
      class="thin"
      id="line3" />
   <path
-     d="M145 61 A110 110 0 0 1 35 171"
+     d="M 148.17502,61 A 110,110 0 0 1 38.175002,171"
      class="thin"
      id="path3" />
   <!-- Eyelet at the quadrant vertex, clear of the shelf-body joint -->
   <circle
-     cx="35"
+     cx="38.175003"
      cy="61"
      r="2.5"
      class="outline"
      id="circle3" />
   <!-- Plumb line and bob hang below the bottom of the body -->
   <line
-     x1="35"
+     x1="38.175003"
      y1="61"
-     x2="35"
+     x2="38.175003"
      y2="211"
      class="outline"
      id="line4" />
   <circle
-     cx="35"
+     cx="38.175003"
      cy="219"
      r="5"
      class="outline"
      id="circle4" />
   <!-- Alignment indication: quadrant top edge parallel to machine-cut body top -->
   <line
-     x1="23"
+     x1="26.175003"
      y1="53"
-     x2="157"
+     x2="160.17496"
      y2="53"
      class="guide"
      id="line5" />
   <!-- Minimal labels -->
   <text
-     x="90"
-     y="39"
+     x="-109.41496"
+     y="19.328461"
      text-anchor="middle"
      class="label"
-     id="text5">Cardboard shelf / top reference edge</text>
+     id="text5"
+     transform="rotate(-90)">Cardboard shelf / top reference edge</text>
   <text
-     x="65.29866"
-     y="58.983223"
+     x="-145.13673"
+     y="29.763233"
      class="label"
-     id="text6">Straw sight behind body</text>
+     id="text6"
+     transform="rotate(-90)">Straw sight behind body</text>
   <text
-     x="96"
+     x="99.175003"
      y="86"
      class="label"
      id="text7">Cardboard body</text>
   <text
-     x="83"
+     x="86.175003"
      y="123"
      class="label"
      id="text8">Printed quadrant</text>
   <text
-     x="3.6829269"
-     y="73.634148"
+     x="15.528444"
+     y="34.096577"
      class="label"
-     id="text9">Eyelet at vertex</text>
+     id="text9"><tspan
+       sodipodi:role="line"
+       id="tspan1"
+       x="15.528444"
+       y="34.096577">Eyelet at</tspan><tspan
+       sodipodi:role="line"
+       id="tspan2"
+       x="15.528444"
+       y="40.346577">vertex</tspan></text>
   <text
-     x="90.097565"
-     y="50.780487"
-     class="label"
-     id="text10">Alignment margin</text>
-  <text
-     x="113"
+     x="116.17499"
      y="144"
      class="label"
      id="text11">45° clearance cut</text>
   <text
-     x="41"
+     x="44.175003"
      y="205"
      class="label"
      id="text12">Plumb line</text>
   <text
-     x="41"
+     x="44.175003"
      y="222"
      class="label"
      id="text13">Plumb bob</text>
   <path
      style="fill:none;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-     d="m 13.170732,65.121951 c 5.487805,-6.219512 11.707316,-4.756099 11.707316,-4.756099"
+     d="m 31.549284,42.497989 c 6.703252,4.885155 5.825021,11.213868 5.825021,11.213868"
      id="path13" />
 </svg>

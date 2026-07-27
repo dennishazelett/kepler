@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.2",
+  "survey_id": "SUR-PIL-2026-001",
+  "title": "Pilot Astronomical Survey 001",
+  "survey_type": "astronomical_observation",
+  "scientific_question": "Where is Ursa Major?",
+  "observer_ids": [
+    "OBS-0001",
+    "OBS-0002"
+  ],
+  "protocol_id": null,
+  "protocol_version": null,
+  "observing_location": {
+    "latitude_deg": 34.40732,
+    "longitude_deg": -118.56714,
+    "elevation_m": 374.904,
+    "coordinate_reference_system": "WGS84"
+  },
+  "working_representation": {
+    "cross-staff-observation": {
+      "fiducial_width": "in",
+      "staff_reading": "in"
+    }
+  },
+  "observation_tables": [
+    {
+      "path": "observations/cross-staff-observations.csv",
+      "instrument_instance_id": "INS-0001",
+      "observation_specification": {
+        "name": "cross-staff-observation",
+        "version": "0.3"
+      }
+    },
+    {
+      "path": "observations/quadrant-observations.csv",
+      "instrument_instance_id": "INS-0002",
+      "observation_specification": {
+        "name": "quadrant-observation",
+        "version": "0.1"
+      }
+    },
+    {
+      "path": "observations/compass-observations.csv",
+      "instrument_instance_id": "INS-0003",
+      "observation_specification": {
+        "name": "compass-observation",
+        "version": "0.1"
+      }
+    }
+  ],
+  "site_id": null,
+  "started_at": "2026-07-26T04:22:57Z",
+  "ended_at": "2026-07-26T07:54:47Z",
+  "submitted_at": null,
+  "attachments": [
+    {
+      "attachment_id": "ATT-0001",
+      "path": "attachments/raw_values.csv",
+      "description": "Original raw quadrant and compass observations.",
+      "media_type": "text/csv",
+      "sha256": "5142117cd38d9e01e43930e1f2e6131c6b9aab52c0984814a3853258e96f274e"
+    },
+    {
+      "attachment_id": "ATT-0002",
+      "path": "attachments/cross-staff-raw.csv",
+      "description": "Original raw cross-staff observations.",
+      "media_type": "text/csv",
+      "sha256": "86af04555d075ac5596af4aa3e2e0502fcfd707ff10a6171ed18aa904eca7466"
+    }
+  ]
+}

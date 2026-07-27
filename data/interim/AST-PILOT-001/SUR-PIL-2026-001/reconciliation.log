@@ -1,0 +1,85 @@
+# Reconciliation Log
+
+## 2026-07-26
+
+Dataset: Pilot Astronomical Survey 001
+
+Input:
+
+* `raw/raw_values.csv`
+
+Output:
+
+* `interim/working_values.csv`
+
+Checks performed:
+
+* Verified observation count.
+* Verified no observations omitted or duplicated.
+* Verified all target names preserved.
+* Verified all measurement values preserved.
+* Verified all dates and UTC times preserved.
+
+Working-data additions:
+
+* `observation_id`
+* `observer_id`
+
+Structural changes:
+
+* Renamed columns to provisional working conventions.
+* Combined date and UTC time into a provisional ISO 8601 timestamp.
+* Removed one trailing blank row.
+
+Scientific changes:
+
+* None.
+
+Result:
+PASS
+
+Working observation format: Draft 0.1
+
+## 2026-07-26
+
+Dataset: Pilot Astronomical Survey 001
+
+Input:
+
+* `raw/cross-staff-raw.csv`
+
+Output:
+
+* `interim/cross-staff-working.csv`
+
+Checks performed:
+
+* Verified observation count.
+* Verified no observations omitted or duplicated.
+* Verified primary and secondary target ordering preserved.
+* Verified all fiducial-width values preserved.
+* Verified all staff-reading values preserved.
+* Verified all dates and UTC times preserved.
+* Verified observer and instrument identifiers.
+
+Working-data additions:
+
+* `observation_id`
+* `observer_id`
+* `instrument_instance_id`
+
+Structural changes:
+
+* Renamed columns to Draft 0.3 working conventions.
+* Combined date and UTC time into a provisional ISO 8601 UTC timestamp.
+
+Scientific changes:
+
+* None.
+* No unit conversion performed.
+* No measurement values modified.
+
+Result:
+PASS
+
+Working observation format: Draft 0.3

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kepler.example/schemas/quadrant-observation.schema.json",
+  "title": "Kepler Quadrant Observation",
+  "description": "Canonical raw row format for astronomical quadrant observations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "observation_id",
+    "observer_id",
+    "instrument",
+    "target_name",
+    "angle_deg",
+    "observed_at"
+  ],
+  "properties": {
+    "observation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "observer_id": {
+      "type": "string",
+      "pattern": "^OBS-[0-9]{4}$"
+    },
+    "instrument": {
+      "const": "quadrant"
+    },
+    "target_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "angle_deg": {
+      "type": "number",
+      "description": "Raw quadrant angle reading in degrees.",
+      "x-kepler-unit": "deg",
+      "x-kepler-dimension": "angle"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

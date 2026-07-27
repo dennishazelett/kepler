@@ -1,0 +1,55 @@
+campaign_id: quadrant-calibration-001
+survey_id: SUR-CAL-002
+status: working
+
+observer_id: OBS-0001
+recorder:
+  observer_id: OBS-0002
+  role: recorder
+
+instrument_instance_id: INS-0002
+instrument_type: quadrant
+
+site:
+  site_id: SITE-0001
+  latitude_deg: 34.40732
+  longitude_deg: -118.56714
+  datum: WGS84
+
+geometry:
+  horizontal_distance:
+    value: 48
+    unit: in
+    description: Horizontal offset from the calibration range to the observer position.
+
+  reference_targets:
+    - reference_target_id: LEVEL-0
+      vertical_offset:
+        value: 0
+        unit: in
+    - reference_target_id: LEVEL-1
+      vertical_offset:
+        value: 12
+        unit: in
+    - reference_target_id: LEVEL-2
+      vertical_offset:
+        value: 24
+        unit: in
+    - reference_target_id: LEVEL-3
+      vertical_offset:
+        value: 36
+        unit: in
+    - reference_target_id: LEVEL-4
+      vertical_offset:
+        value: 48
+        unit: in
+    - reference_target_id: LEVEL-5
+      vertical_offset:
+        value: 60
+        unit: in
+
+measurement_notes:
+  - Target offsets were measured and placed independently to avoid compound placement error.
+  - Geometry was recorded at inch resolution.
+  - The observer estimates that no point in the completed range was displaced by more than approximately 1/16 inch from its intended position.
+  - The expanded five-target range and 48-inch observer distance replaced the narrower preliminary design to provide a wider range of calibration angles.

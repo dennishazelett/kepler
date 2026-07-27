@@ -1,118 +1,157 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://kepler.example/schemas/cross-staff-observation.schema.json",
-  "title": "Kepler Cross-Staff Observation",
-  "description": "Canonical raw observation format for cross-staff surveys.",
-  "type": "object",
-  "additionalProperties": false,
-
-  "required": [
-    "schema_version",
-    "survey_id",
-    "observation_id",
-    "observed_at",
-    "observer_id",
-    "instrument_instance_id",
-    "fiducial_id",
-    "staff_reading"
-  ],
-
-  "properties": {
-    "schema_version": {
-      "type": "string",
-      "description": "Version of this observation schema.",
-      "pattern": "^0\\.1$"
-    },
-
-    "survey_id": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9_-]+$"
-    },
-
-    "observation_id": {
-      "type": "string",
-      "description": "Unique identifier for this observation.",
-      "pattern": "^[A-Za-z0-9_-]+$"
-    },
-
-"observed_at": {
-  "description": "Observation date or timestamp.",
-  "anyOf": [
-    {
-      "type": "string",
-      "format": "date"
-    },
-    {
-      "type": "string",
-      "format": "date-time"
-    }
-  ]
+"$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "https://kepler.example/schemas/cross-staff-observation.schema.json",
+"title": "Kepler Cross-Staff Observation",
+"description": "Raw observation format for cross-staff surveys. Submission-ready physical quantities use the canonical units declared by this schema.",
+"type": "object",
+"additionalProperties": false,
+"required": [
+"schema_version",
+"survey_id",
+"observation_id",
+"observed_at",
+"observer_id",
+"instrument_instance_id",
+"fiducial_width",
+"staff_reading",
+"notes_id",
+"calibration",
+"field_observation"
+],
+"properties": {
+"schema_version": {
+"type": "string",
+"description": "Version of this observation schema.",
+"pattern": "^0\\.3$"
 },
-    "observer_id": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9_-]+$"
-    },
-
-    "instrument_instance_id": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9_-]+$"
-    },
-
-    "fiducial_id": {
-      "type": "string",
-      "description": "Identifier of the fiducial used for this measurement."
-    },
-
-    "staff_reading": {
-      "type": "number",
-      "description": "Raw cross-staff reading recorded directly from the instrument."
-    },
-
-    "notes_id": {
-      "type": ["string", "null"],
-      "description": "Optional identifier linking to narrative notes."
-    },
-
-    "calibration": {
-      "type": ["object", "null"],
-      "description": "Present only for instrument calibration surveys.",
-      "additionalProperties": false,
-      "required": [
-        "target_id",
-        "target_width",
-        "target_distance"
-      ],
-      "properties": {
-        "target_id": {
-          "type": "string"
-        },
-        "target_width": {
-          "type": "number",
-          "description": "Known physical width of the calibration target."
-        },
-        "target_distance": {
-          "type": "number",
-          "description": "Distance from observer to calibration target."
-        }
-      }
-    },
-
-    "field_observation": {
-      "type": ["object", "null"],
-      "description": "Present only for astronomical observation surveys.",
-      "additionalProperties": false,
-      "required": [
-        "primary_target_id",
-        "secondary_target_id"
-      ],
-      "properties": {
-        "primary_target_id": {
-          "type": "string"
-        },
-        "secondary_target_id": {
-          "type": "string"
-        }
-      }
-    }
-  }
+"survey_id": {
+"type": "string",
+"pattern": "^[A-Za-z0-9_-]+$"
+},
+"observation_id": {
+"type": "string",
+"description": "Stable identifier for this observation.",
+"pattern": "^[A-Za-z0-9_-]+$"
+},
+"observed_at": {
+"description": "Observation date or timestamp. Preserve the precision supported by the source record.",
+"x-kepler-format": "ISO 8601 date or date-time",
+"anyOf": [
+{
+"type": "string",
+"format": "date"
+},
+{
+"type": "string",
+"format": "date-time"
+}
+]
+},
+"observer_id": {
+"type": "string",
+"pattern": "^[A-Za-z0-9_-]+$"
+},
+"instrument_instance_id": {
+"type": "string",
+"pattern": "^[A-Za-z0-9_-]+$"
+},
+"fiducial_width": {
+"type": "number",
+"exclusiveMinimum": 0,
+"description": "Width of the crosspiece segment used to span the observed targets, in millimetres.",
+"x-kepler-unit": "mm",
+"x-kepler-dimension": "length"
+},
+"staff_reading": {
+"type": "number",
+"minimum": 0,
+"description": "Position of the crosspiece measured from the instrument origin along the staff, in millimetres.",
+"x-kepler-unit": "mm",
+"x-kepler-dimension": "length"
+},
+"notes_id": {
+"type": [
+"string",
+"null"
+],
+"description": "Optional identifier linking to a separate narrative note."
+},
+"calibration": {
+"type": [
+"object",
+"null"
+],
+"description": "Calibration reference geometry. Non-null only for calibration observations.",
+"additionalProperties": false,
+"required": [
+"target_id",
+"target_width",
+"target_distance"
+],
+"properties": {
+"target_id": {
+"type": "string",
+"minLength": 1
+},
+"target_width": {
+"type": "number",
+"exclusiveMinimum": 0,
+"description": "Known physical width of the calibration target, in millimetres.",
+"x-kepler-unit": "mm",
+"x-kepler-dimension": "length"
+},
+"target_distance": {
+"type": "number",
+"exclusiveMinimum": 0,
+"description": "Distance to the calibration target as defined by the calibration protocol, in millimetres.",
+"x-kepler-unit": "mm",
+"x-kepler-dimension": "length"
+}
+}
+},
+"field_observation": {
+"type": [
+"object",
+"null"
+],
+"description": "Ordered target pair measured during a field observation. Non-null only for field observations.",
+"additionalProperties": false,
+"required": [
+"primary_target_id",
+"secondary_target_id"
+],
+"properties": {
+"primary_target_id": {
+"type": "string",
+"minLength": 1
+},
+"secondary_target_id": {
+"type": "string",
+"minLength": 1
+}
+}
+}
+},
+"oneOf": [
+{
+"properties": {
+"calibration": {
+"type": "object"
+},
+"field_observation": {
+"type": "null"
+}
+}
+},
+{
+"properties": {
+"calibration": {
+"type": "null"
+},
+"field_observation": {
+"type": "object"
+}
+}
+}
+]
 }

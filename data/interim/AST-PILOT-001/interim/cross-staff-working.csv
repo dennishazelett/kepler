@@ -1,0 +1,6 @@
+observation_id,observer_id,instrument_instance_id,primary_target_id,secondary_target_id,fiducial_width,staff_reading,observed_at
+SUR-PIL-001-OBS-001,OBS-0001,INS-0001,Mizar,Alkaid,4,32.375,2026-07-26T07:45:10Z
+SUR-PIL-001-OBS-002,OBS-0001,INS-0001,Polaris,Kochab,4,12.75,2026-07-26T07:48:14Z
+SUR-PIL-001-OBS-003,OBS-0001,INS-0001,Kochab,Mizar,4,10.75,2026-07-26T07:50:50Z
+SUR-PIL-001-OBS-004,OBS-0001,INS-0001,Alioth,Mizar,4,12.325,2026-07-26T07:52:17Z
+SUR-PIL-001-OBS-005,OBS-0001,INS-0001,Alioth,Alkaid,4,21.625,2026-07-26T07:54:47Z

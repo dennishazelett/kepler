@@ -1,0 +1,288 @@
+---
+title: "Quadrant Calibration 001: Exploratory Analysis"
+subtitle: "SUR-CAL-002"
+format:
+  html:
+    toc: true
+    code-fold: false
+jupyter: julia-1.11
+execute:
+  echo: true
+  warning: false
+  error: false
+---
+
+# Purpose
+
+This notebook evaluates the initial repeatability and accuracy of `INS-0002`, the first registered Kepler quadrant, using the known geometry of Quadrant Calibration 001.
+
+The analysis preserves the reconciled working observations unchanged. Ideal angles, residuals, summaries, and diagnostic flags are derived only within this analysis.
+
+# Executed protocol
+
+The preliminary campaign design used three elevated targets at a longer observing distance. During execution, the observer deliberately expanded the angular range by:
+
+- sitting rather than standing;
+- moving to a horizontal distance of 48 inches from the calibration range; and
+- marking five elevated targets at independently measured 12-inch intervals above the eye-level reference.
+
+This is treated as an intentional protocol improvement, not as a defect. The executed geometry recorded in `calibration_geometry.yaml` is authoritative for this analysis.
+
+# Julia environment
+
+This notebook uses Julia through Quarto's Jupyter engine. The required packages are `CSV`, `DataFrames`, `YAML`, and `CairoMakie`.
+
+If they are not installed, run the following once in Julia:
+
+```julia
+using Pkg
+Pkg.add(["IJulia", "CSV", "DataFrames", "YAML", "CairoMakie"])
+```
+
+```{julia}
+using CSV
+using DataFrames
+using YAML
+using Statistics
+using CairoMakie
+```
+
+# Paths
+
+The paths below assume this notebook remains in the campaign-local `notebooks/` directory.
+
+```{julia}
+campaign_dir = normpath(joinpath(@__DIR__, ".."))
+working_data_path = joinpath(campaign_dir, "interim", "working_values.csv")
+geometry_path = joinpath(campaign_dir, "calibration_geometry.yaml")
+tables_dir = joinpath(campaign_dir, "tables")
+figures_dir = joinpath(campaign_dir, "figures")
+
+mkpath(tables_dir)
+mkpath(figures_dir)
+```
+
+# Load reconciled observations
+
+```{julia}
+observations = CSV.read(working_data_path, DataFrame)
+
+required_columns = [
+    "observation_id",
+    "observer_id",
+    "instrument",
+    "reference_target_id",
+    "angle_deg",
+    "observed_time_utc",
+]
+
+missing_columns = setdiff(required_columns, names(observations))
+isempty(missing_columns) || error("Missing required columns: $(join(missing_columns, ", "))")
+
+nrow(observations)
+```
+
+```{julia}
+first(observations, 10)
+```
+
+# Load calibration geometry
+
+```{julia}
+geometry = YAML.load_file(geometry_path)
+
+horizontal_distance_in = Float64(geometry["geometry"]["horizontal_distance"]["value"])
+target_records = geometry["geometry"]["reference_targets"]
+
+target_geometry = DataFrame(
+    reference_target_id = String[],
+    vertical_offset_in = Float64[],
+)
+
+for target in target_records
+    push!(target_geometry, (
+        String(target["reference_target_id"]),
+        Float64(target["vertical_offset"]["value"]),
+    ))
+end
+
+target_geometry.ideal_angle_deg = atand.(
+    target_geometry.vertical_offset_in ./ horizontal_distance_in
+)
+
+target_geometry
+```
+
+# Derive ideal angles and residuals
+
+Residuals are defined as:
+
+$$
+\text{residual}
+=
+\text{observed angle}
+-
+\text{ideal angle}
+$$
+Positive residuals indicate that the quadrant reading exceeded the angle implied by the calibration geometry.
+
+```{julia}
+analysis_data = leftjoin(
+    observations,
+    target_geometry,
+    on = :reference_target_id,
+)
+
+any(ismissing, analysis_data.ideal_angle_deg) &&
+    error("At least one observation has no matching calibration target geometry.")
+
+analysis_data.residual_deg = analysis_data.angle_deg .- analysis_data.ideal_angle_deg
+analysis_data.abs_residual_deg = abs.(analysis_data.residual_deg)
+
+# Diagnostic flag only; no values are changed or removed.
+analysis_data.review_flag = analysis_data.abs_residual_deg .> 5.0
+
+CSV.write(joinpath(tables_dir, "quadrant-calibration-observations.csv"), analysis_data)
+first(analysis_data, 12)
+```
+
+# Data-integrity review
+
+The following table surfaces observations with absolute residuals greater than 5 degrees. A flag is not a correction and does not establish that an observation is erroneous.
+
+```{julia}
+flagged = filter(:review_flag => identity, analysis_data)
+flagged
+```
+
+# Target-level summary
+
+```{julia}
+summary_table = combine(
+    groupby(analysis_data, :reference_target_id),
+    nrow => :n,
+    :vertical_offset_in => first => :vertical_offset_in,
+    :ideal_angle_deg => first => :ideal_angle_deg,
+    :angle_deg => mean => :mean_observed_deg,
+    :angle_deg => std => :sd_observed_deg,
+    :angle_deg => minimum => :min_observed_deg,
+    :angle_deg => maximum => :max_observed_deg,
+    :residual_deg => mean => :mean_residual_deg,
+    :residual_deg => std => :sd_residual_deg,
+    :abs_residual_deg => mean => :mean_absolute_residual_deg,
+)
+
+sort!(summary_table, :vertical_offset_in)
+CSV.write(joinpath(tables_dir, "quadrant-calibration-summary.csv"), summary_table)
+summary_table
+```
+
+# Overall summary
+
+```{julia}
+overall_summary = DataFrame(
+    statistic = [
+        "observations",
+        "mean residual (deg)",
+        "residual SD (deg)",
+        "mean absolute residual (deg)",
+        "maximum absolute residual (deg)",
+    ],
+    value = [
+        nrow(analysis_data),
+        mean(analysis_data.residual_deg),
+        std(analysis_data.residual_deg),
+        mean(analysis_data.abs_residual_deg),
+        maximum(analysis_data.abs_residual_deg),
+    ],
+)
+
+CSV.write(joinpath(tables_dir, "quadrant-calibration-overall-summary.csv"), overall_summary)
+overall_summary
+```
+
+# Diagnostic figures
+
+## Observed and ideal angles
+
+```{julia}
+fig_observed = Figure(size = (800, 520))
+ax_observed = Axis(
+    fig_observed[1, 1],
+    xlabel = "Ideal angle (degrees)",
+    ylabel = "Observed angle (degrees)",
+    title = "Quadrant readings versus calibration geometry",
+)
+
+scatter!(ax_observed, analysis_data.ideal_angle_deg, analysis_data.angle_deg)
+range_min = min(minimum(analysis_data.ideal_angle_deg), minimum(analysis_data.angle_deg))
+range_max = max(maximum(analysis_data.ideal_angle_deg), maximum(analysis_data.angle_deg))
+lines!(ax_observed, [range_min, range_max], [range_min, range_max])
+
+save(joinpath(figures_dir, "observed-vs-ideal.png"), fig_observed)
+fig_observed
+```
+
+## Residual by target
+
+```{julia}
+target_order = summary_table.reference_target_id
+x_lookup = Dict(target => i for (i, target) in enumerate(target_order))
+x_values = [x_lookup[target] for target in analysis_data.reference_target_id]
+
+fig_residual = Figure(size = (900, 520))
+ax_residual = Axis(
+    fig_residual[1, 1],
+    xlabel = "Reference target",
+    ylabel = "Residual (degrees)",
+    title = "Residuals by calibration target",
+    xticks = (1:length(target_order), target_order),
+)
+
+scatter!(ax_residual, x_values, analysis_data.residual_deg)
+hlines!(ax_residual, [0.0])
+
+save(joinpath(figures_dir, "residuals-by-target.png"), fig_residual)
+fig_residual
+```
+
+## Mean observed angle with repeatability
+
+```{julia}
+fig_summary = Figure(size = (800, 520))
+ax_summary = Axis(
+    fig_summary[1, 1],
+    xlabel = "Ideal angle (degrees)",
+    ylabel = "Mean observed angle (degrees)",
+    title = "Target means and within-target variation",
+)
+
+errorbars!(
+    ax_summary,
+    summary_table.ideal_angle_deg,
+    summary_table.mean_observed_deg,
+    summary_table.sd_observed_deg,
+)
+scatter!(
+    ax_summary,
+    summary_table.ideal_angle_deg,
+    summary_table.mean_observed_deg,
+)
+
+summary_min = min(minimum(summary_table.ideal_angle_deg), minimum(summary_table.mean_observed_deg))
+summary_max = max(maximum(summary_table.ideal_angle_deg), maximum(summary_table.mean_observed_deg))
+lines!(ax_summary, [summary_min, summary_max], [summary_min, summary_max])
+
+save(joinpath(figures_dir, "target-means-vs-ideal.png"), fig_summary)
+fig_summary
+```
+
+# Initial interpretation
+
+The 0° target was measured accurately, while all elevated targets showed a similar negative residual. The offset did not increase appreciably with target angle, and within-target scatter remained broadly stable. This pattern argues against a simple quadrant zero-point error and instead suggests a systematic change introduced when the observer sighted upward. A plausible mechanism is displacement of the effective eye position caused by head tilt or altered body posture relative to the short-range calibration geometry. Because this geometric effect depends on the proximity of the target, it should be much smaller for astronomical objects at effectively infinite distance, although posture-related handling effects may still require evaluation.
+
+# Reproducibility record
+
+```{julia}
+versioninfo()
+```

@@ -1,4 +1,4 @@
-# Survey Specification (Draft 0.2)
+# Survey Specification (Draft 0.3)
 
 ## Purpose
 
@@ -97,6 +97,7 @@ Examples include:
 * sketches;
 * calibration targets;
 * scanned notebooks;
+* original working tables;
 * supplementary documentation.
 
 Attachments support interpretation but are not part of the canonical observation table.
@@ -136,13 +137,11 @@ These surveys characterize the performance of a specific measurement system unde
 Typical observations may include:
 
 * fiducial selection;
-* staff reading;
+* instrument reading;
 * reference target identifier;
 * reference geometry.
 
 Calibration surveys characterize the complete measurement system, including the observer, instrument instance, and protocol.
-
----
 
 ## Astronomical Observation Survey
 
@@ -153,8 +152,6 @@ Scientific question:
 These surveys collect observations intended for astronomical inference.
 
 The observation payload will differ from calibration surveys according to the instrument employed.
-
----
 
 Future survey types may include:
 
@@ -175,12 +172,32 @@ However, every canonical observation table must satisfy the following requiremen
 * identical column names for a given specification;
 * identical column order;
 * identical data types;
-* standardized units;
+* canonical units and formats;
 * no derived variables;
 * no formatting dependencies;
 * directly concatenable with every other accepted table conforming to the same specification.
 
 Instrument-specific observation tables may differ from one another while remaining individually standardized.
+
+## Units and Formats
+
+Every observation specification must define the canonical representation of each field.
+
+For fields representing physical quantities, the observation specification must declare one canonical unit. This requirement applies to all physical quantities, including instrument readings, calibration reference geometry, environmental conditions, and observational setup quantities.
+
+Contributors may collect and retain working data in other units. Before validation and submission, all physical quantities in the canonical observation table must be converted to the units declared by the applicable observation specification.
+
+Deterministic unit conversion is representational normalization, not scientific inference. Conversion must not introduce quantities that were not present in the source record.
+
+The original working table may be retained as an attachment. When conversion is required, the survey package should preserve a conversion record identifying the source unit and canonical unit for each converted field.
+
+Fields that do not represent physical quantities use the representation appropriate to their semantic class:
+
+* temporal fields use the canonical date or date-time format declared by the specification;
+* identifiers and categorical fields have no applicable unit;
+* mathematically dimensionless numerical quantities use the unit `1`.
+
+Temporal values should preserve the precision supported by the source record. A calendar date is valid when only the date is known or scientifically relevant; a date-time should be used when the time is known and required. Precision must not be invented during survey preparation.
 
 ---
 
@@ -193,9 +210,12 @@ Validation includes:
 * required metadata;
 * observation specification;
 * data types;
+* canonical units and formats;
 * identifier uniqueness;
 * schema version;
 * referential integrity where applicable.
+
+A successful structural validation confirms that a submitted value is represented according to its specification. It cannot independently establish that a contributor converted a source measurement correctly. Survey preparation utilities and conversion records therefore form part of the submission workflow when noncanonical working units were used.
 
 Accepted surveys become immutable components of the scientific record.
 

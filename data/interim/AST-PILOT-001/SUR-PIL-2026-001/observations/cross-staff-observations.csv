@@ -1,0 +1,6 @@
+schema_version,survey_id,observation_id,observed_at,observer_id,instrument_instance_id,fiducial_width,staff_reading,notes_id,calibration,field_observation.primary_target_id,field_observation.secondary_target_id
+0.3,SUR-PIL-2026-001,SUR-PIL-2026-001-OBS-001,2026-07-26T07:45:10Z,OBS-0001,INS-0001,4,32.375,,,Mizar,Alkaid
+0.3,SUR-PIL-2026-001,SUR-PIL-2026-001-OBS-002,2026-07-26T07:48:14Z,OBS-0001,INS-0001,4,12.75,,,Polaris,Kochab
+0.3,SUR-PIL-2026-001,SUR-PIL-2026-001-OBS-003,2026-07-26T07:50:50Z,OBS-0001,INS-0001,4,10.75,,,Kochab,Mizar
+0.3,SUR-PIL-2026-001,SUR-PIL-2026-001-OBS-004,2026-07-26T07:52:17Z,OBS-0001,INS-0001,4,12.325,,,Alioth,Mizar
+0.3,SUR-PIL-2026-001,SUR-PIL-2026-001-OBS-005,2026-07-26T07:54:47Z,OBS-0001,INS-0001,4,21.625,,,Alioth,Alkaid

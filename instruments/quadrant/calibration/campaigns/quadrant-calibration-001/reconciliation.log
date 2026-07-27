@@ -1,0 +1,36 @@
+# Reconciliation Log
+
+## 2026-07-26 — Source correction
+
+Dataset: Quadrant Calibration 001
+
+Source reviewed:
+- Original handwritten field notes
+- Original CSV transcription
+
+Observation identified:
+- Reference target: LEVEL-1
+- UTC time: 03:02:46
+- Observation ID: SUR-CAL-002-OBS-044
+
+Correction:
+- CSV transcription: 0.46875 deg
+- Handwritten field record: 10.75 deg
+- Corrected value: 10.75 deg
+
+Basis:
+- The handwritten notes are the authoritative field record.
+- The UTC timestamp uniquely reconciles the handwritten entry with the CSV row.
+
+Files updated:
+- raw/raw_values.csv
+- interim/working_values.csv
+
+Scientific interpretation:
+- None. This is correction of a transcription error, not alteration of the field measurement.
+
+Result:
+PASS
+
+Working observation format:
+- Draft 0.1
