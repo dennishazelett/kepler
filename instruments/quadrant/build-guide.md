@@ -81,6 +81,12 @@ The printed scale should be mounted so that the straight edge of the quadrant is
 
 The printed sheet need not be trimmed provided that the graduations remain fully visible.
 
+A print-ready graduated quadrant scale suitable for mounting to the front face of the instrument is provided in:
+
+- `instrument/quadrant/images/quadrangle_mod.pdf`
+
+Print the PDF at **100% scale** (no page scaling or "fit to page") before gluing it to the front face of the quadrant.
+
 ## Sighting Mechanism
 
 Recommended:

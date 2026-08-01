@@ -31,6 +31,9 @@ Thumbs.db
 *.pdf
 *.html
 
+# ...except this one
+!instruments/quadrant/images/quadrangle_mod.pdf
+
 # ------------------------------------------------------------------
 # Quarto render artifacts
 # ------------------------------------------------------------------
