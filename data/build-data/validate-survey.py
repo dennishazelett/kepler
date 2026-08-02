@@ -404,36 +404,87 @@ def validate_package(
                 f"is not accepted by {schema_path.name}"
             )
 
+        measurement_reference = table.get("measurement_reference")
+
+        if isinstance(measurement_reference, dict):
+            azimuth_reference = measurement_reference.get("azimuth_reference")
+            declination = measurement_reference.get(
+                "magnetic_declination_deg"
+            )
+            sign_convention = measurement_reference.get(
+                "declination_sign_convention"
+            )
+
+            if azimuth_reference == "magnetic_north":
+                if not isinstance(declination, (int, float)) or isinstance(
+                    declination, bool
+                ):
+                    errors.append(
+                        f"{table_prefix}: magnetic_declination_deg must be numeric "
+                        "when azimuth_reference is 'magnetic_north'"
+                    )
+
+                if sign_convention != "east_positive":
+                    errors.append(
+                        f"{table_prefix}: declination_sign_convention must be "
+                        "'east_positive' when azimuth_reference is 'magnetic_north'"
+                    )
+
+            elif azimuth_reference == "true_north":
+                if declination is not None:
+                    errors.append(
+                        f"{table_prefix}: magnetic_declination_deg must be null "
+                        "when azimuth_reference is 'true_north'"
+                    )
+
+                if sign_convention is not None:
+                    errors.append(
+                        f"{table_prefix}: declination_sign_convention must be null "
+                        "when azimuth_reference is 'true_north'"
+                    )
+
         try:
-            _, observations = read_observations(observation_path, observation_schema)
+            _, observations = read_observations(
+                observation_path,
+                observation_schema,
+            )
         except ValueError as exc:
             errors.append(str(exc))
             continue
 
         validator = Draft202012Validator(
-            observation_schema, format_checker=FormatChecker()
+            observation_schema,
+            format_checker=FormatChecker(),
         )
+
         for line_number, observation in observations:
             row_prefix = f"{relative_path} row {line_number}"
+
             for error in sorted(validator.iter_errors(observation), key=str):
-                errors.append(format_jsonschema_error(row_prefix, error))
+                errors.append(
+                    format_jsonschema_error(row_prefix, error)
+                )
 
             observation_id = observation.get("observation_id")
             if isinstance(observation_id, str) and observation_id:
                 prior = global_observation_ids.get(observation_id)
                 if prior is not None:
                     errors.append(
-                        f"{row_prefix}: duplicate observation_id {observation_id!r}; "
-                        f"first seen at {prior}"
+                        f"{row_prefix}: duplicate observation_id "
+                        f"{observation_id!r}; first seen at {prior}"
                     )
                 else:
                     global_observation_ids[observation_id] = row_prefix
 
             row_survey_id = observation.get("survey_id")
-            if row_survey_id is not None and survey_id is not None and row_survey_id != survey_id:
+            if (
+                row_survey_id is not None
+                and survey_id is not None
+                and row_survey_id != survey_id
+            ):
                 errors.append(
-                    f"{row_prefix}: survey_id {row_survey_id!r} does not match "
-                    f"survey.json ({survey_id!r})"
+                    f"{row_prefix}: survey_id {row_survey_id!r} does not "
+                    f"match survey.json ({survey_id!r})"
                 )
 
             row_instrument = observation.get("instrument_instance_id")
@@ -443,8 +494,9 @@ def validate_package(
                 and row_instrument != instrument_instance_id
             ):
                 errors.append(
-                    f"{row_prefix}: instrument_instance_id {row_instrument!r} does not "
-                    f"match observation_tables manifest ({instrument_instance_id!r})"
+                    f"{row_prefix}: instrument_instance_id "
+                    f"{row_instrument!r} does not match observation_tables "
+                    f"manifest ({instrument_instance_id!r})"
                 )
 
             observer_id = observation.get("observer_id")
@@ -454,13 +506,14 @@ def validate_package(
                 and observer_id not in declared_observers
             ):
                 errors.append(
-                    f"{row_prefix}: observer_id {observer_id!r} is not declared in survey.json"
+                    f"{row_prefix}: observer_id {observer_id!r} is not "
+                    "declared in survey.json"
                 )
 
             notes_id = observation.get("notes_id")
             if isinstance(notes_id, str) and notes_id:
                 referenced_notes.add(notes_id)
-
+                
     validate_notes(survey_dir, referenced_notes, errors)
 
     for index, attachment in enumerate(survey.get("attachments", []), start=1):

@@ -25,8 +25,10 @@ These concepts complement those introduced by the cross-staff and broaden the ra
 |----|----|
 | `design.md` | Measurement principles, historical context, and engineering decisions |
 | `build-guide.md` | Construction instructions and required materials |
-| `calibration.md` | Calibration procedures and calibration campaign |
+| `calibration.md` | Calibration principles, rationale, and interpretation |
 | `bill-of-materials.md` | Components required to build the instrument |
+
+Operational calibration procedures are maintained separately in protocols/quadrant/calibration/protocol.md.
 
 ## Relationship to the Kepler Data Model
 
@@ -38,6 +40,6 @@ This provides an opportunity to evaluate whether the Kepler data model successfu
 
 ## Current Status
 
-The quadrant is currently in the design phase.
+The Kepler reference quadrant has been designed, constructed, and evaluated through an initial calibration campaign.
 
-Initial work will focus on understanding the measurement model before finalizing the instrument design and construction procedures.
+Current work focuses on refining the calibration protocol, documenting instrument performance, and extending the instrument from controlled calibration measurements to astronomical field observations.

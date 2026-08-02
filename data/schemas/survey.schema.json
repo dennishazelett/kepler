@@ -199,24 +199,41 @@
               "azimuth_reference": {
                 "type": "string",
                 "enum": [
-                  "magnetic_north"
+                  "magnetic_north",
+                  "true_north"
                 ]
               },
               "magnetic_declination_deg": {
-                "type": "number",
+                "type": [
+                  "number",
+                  "null"
+                ],
                 "minimum": -180,
                 "maximum": 180,
-                "description": "East-positive magnetic declination. True azimuth equals magnetic azimuth plus magnetic declination."
+                "description": "East-positive magnetic declination. Applicable only when azimuth_reference is magnetic_north."
               },
               "declination_sign_convention": {
-                "const": "east_positive"
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "east_positive",
+                  null
+                ]
               },
               "evaluated_at": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "format": "date-time"
               },
               "source": {
-                "type": "string",
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "minLength": 1
               }
             }

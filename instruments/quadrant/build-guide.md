@@ -14,9 +14,9 @@ The objective is to produce an inexpensive, robust, and repeatable instrument su
 
 The first Kepler quadrant is intended to be constructible using inexpensive materials available from hardware, craft, office supply, or general retail stores.
 
-A reference schematic is provided in:
+Reference schematic:
 
-- `figures/quadrant-front.svg`
+![Kepler reference quadrant](images/quadrant-front.svg){width="3.5in" height="4in"}
 
 ------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ The completed instrument should be:
 - sufficiently accurate for scientific investigation
 - easily reproducible by independent builders
 
-Preference is given to repeatability and simplicity over historical fidelity.
+Preference is given to reproducibility and simplicity over historical fidelity.
 
 ------------------------------------------------------------------------
 
@@ -51,9 +51,7 @@ Unlike many educational quadrants, the structural body is **not** cut to the out
 
 The lower right corner of the body is chamfered to provide clearance for the plumb bob while preserving the strength of the instrument.
 
-Figure \@ref(fig:quadrant-ref) illustrates the Kepler reference quadrant described in this guide.
-
-![Kepler reference quadrant. Hidden features are shown with dashed lines.](images/quadrant-front.pdf){width="3.5in" height="4in"}
+![Front face](images/quadrant_front.JPG){width="3.5in" height="4in"} ![Back face](images/quadrant_back.JPG){width="3.5in" height="4in"}
 
 ------------------------------------------------------------------------
 
@@ -81,9 +79,9 @@ The printed scale should be mounted so that the straight edge of the quadrant is
 
 The printed sheet need not be trimmed provided that the graduations remain fully visible.
 
-A print-ready graduated quadrant scale suitable for mounting to the front face of the instrument is provided in:
+A print-ready graduated quadrant scale suitable for mounting to the front face of the instrument is provided in `images/quadrangle_mod.pdf`:
 
-- `instrument/quadrant/images/quadrangle_mod.pdf`
+![Quadrant face](images/quadrangle_mod.svg){width="3.5in" height="4in"}
 
 Print the PDF at **100% scale** (no page scaling or "fit to page") before gluing it to the front face of the quadrant.
 
@@ -139,6 +137,8 @@ Possible options include:
 - steel washer
 - hex nut
 - small brass weight
+
+Above example: M8-1.25x20mm zinc plated cap screw (hex).
 
 The weight should hang below the bottom edge of the instrument throughout the intended measurement range.
 
@@ -238,11 +238,11 @@ The lower right chamfer allows the plumb bob to swing freely at shallow elevatio
 
 # Calibration
 
-No quadrant should be considered complete until it has undergone a documented calibration campaign.
+No quadrant should be considered ready for scientific use until it has undergone a documented calibration campaign.
 
-Calibration procedures are described in:
+Follow the [**Quadrant Calibration Protocol**](../../protocols/quadrant/calibration/protocol.md) before using the instrument for scientific observations.
 
-- `calibration.md`
+For background on the purpose, philosophy, and interpretation of calibration, see [**Quadrant Calibration**](calibration.md).
 
 ------------------------------------------------------------------------
 

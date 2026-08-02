@@ -98,11 +98,32 @@ datasets unless the source contains corresponding observations.
 
 ## Survey Metadata
 
-(Some of these may be included in the raw_values.txt header)
+(Ideally, most of these should be gleaned from the raw data file
+headers)
 
-Survey ID: Survey Type: Scientific Question: Observer(s): Instrument
-Instance: Instrument Design: Protocol Version: Observation
-Specification: Site: Date(s): Schema Version:
+Survey ID:
+
+Survey Type:
+
+Scientific Question:
+
+Observer(s):
+
+Instrument Instance:
+
+Instrument Design:
+
+Protocol ID (if available):
+
+Protocol Version (if available):
+
+Observation Specification:
+
+Site:
+
+Date(s):
+
+Schema Version:
 
 ### Observation Table Metadata:
 
@@ -131,15 +152,25 @@ Specification: Site: Date(s): Schema Version:
   `survey.json.observation_tables[].observation_specification.name`
   unless it exactly matches the schema filename stem.
 
-- Azimuth Reference, if applicable:
+- Azimuth Reference (if applicable):
 
-- Magnetic Declination (degrees), if applicable:
+  - magnetic_north
+  - true_north
 
-- Declination Sign Convention:
+For observation tables referenced to magnetic north, also provide:
 
-- Declination Evaluation Time:
+- Magnetic Declination (degrees)
+- Declination Sign Convention
+- Declination Evaluation Time (optional)
+- Declination Source (optional)
 
-- Declination Source:
+For observation tables referenced to true north, set:
+
+- Magnetic Declination: null
+- Declination Sign Convention: null
+
+Declination metadata are not applicable when observations are already
+referenced to true north.
 
 When attached JSON Schemas conflict with prior examples, previous
 archives, earlier conversation, or model memory, the attached JSON

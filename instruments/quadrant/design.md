@@ -6,7 +6,7 @@ The quadrant is the second reference instrument developed for the Kepler project
 
 Its purpose is not merely to measure angles, but to introduce a fundamentally different measurement principle from that used by the cross-staff. Together, the two instruments allow participants to compare independent approaches to astronomical observation, understand the strengths and limitations of each design, and investigate how different measurement systems influence scientific inference.
 
-The quadrant also serves as the first test of Kepler's instrument-independent data architecture. While the physical instrument differs substantially from the cross-staff, the surrounding workflow—calibration, observation, validation, and data submission—should remain largely unchanged.
+The quadrant demonstrates Kepler's instrument-independent data architecture. While the physical instrument differs substantially from the cross-staff, the surrounding workflow—calibration, observation, validation, and data submission—should remain largely unchanged.
 
 ------------------------------------------------------------------------
 
