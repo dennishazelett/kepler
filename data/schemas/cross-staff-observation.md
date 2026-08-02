@@ -38,10 +38,18 @@ Physical measurements may initially be archived in their documented source units
 
 Original working data may be retained unchanged as a survey attachment. A separate conversion record is optional when the source values, source units, and deterministic normalization rule are otherwise recoverable.
 
+### Interpreting Source Fields
+
+During survey preparation, semantic meaning takes precedence over source field names.
+
+When a source field appears to be an identifier but the accompanying units, protocol documentation, contributor notes, or value patterns establish that it represents a physical quantity, preserve the documented semantic meaning. Do not reinterpret the value solely because of its column name.
+
+For example, in historical cross-staff working tables, fields labeled `fiducial`, `fid`, or similar may record the physical fiducial width rather than a categorical identifier. Values such as `1`, `4`, and `14`, when documented as inches, represent measured fiducial widths expressed in noncanonical units and should be treated as physical measurements requiring unit conversion during representational normalization.
+
 ## Shared Field Definitions
 
 | Field | Type | Semantic class | Canonical unit or format | Description |
-|----|----|----|----|----|
+|---------------|---------------|---------------|---------------|---------------|
 | `schema_version` | string | schema identifier | not applicable | Version of this observation specification. |
 | `survey_id` | string | identifier | not applicable | Survey containing the observation. |
 | `observation_id` | string | identifier | not applicable | Stable identifier for the observation. |
@@ -75,7 +83,7 @@ Required calibration fields:
 - `target_distance`
 
 | Field | Type | Semantic class | Canonical unit or format | Description |
-|----|----|----|----|----|
+|---------------|---------------|---------------|---------------|---------------|
 | `target_id` | string | identifier | not applicable | Identifier of the calibration target. |
 | `target_width` | number | physical quantity | `mm` | Known physical width of the calibration target. |
 | `target_distance` | number | physical quantity | `mm` | Distance from the observer or instrument origin to the calibration target, as defined by the calibration protocol. |
@@ -99,7 +107,7 @@ Required field-observation fields:
 - `secondary_target_id`
 
 | Field | Type | Semantic class | Canonical unit or format | Description |
-|----|----|----|----|----|
+|---------------|---------------|---------------|---------------|---------------|
 | `primary_target_id` | string | identifier | not applicable | Identifier of the target aligned with one edge of the fiducial. |
 | `secondary_target_id` | string | identifier | not applicable | Identifier of the target aligned with the opposite edge of the fiducial. |
 
@@ -113,7 +121,17 @@ Narrative comments should be stored separately and linked through `notes_id`.
 
 ## Versioning Note
 
-Draft 0.3 replaces `fiducial_id` with `fiducial_width`.
+### Legacy Working Representations
+
+Historical working tables may contain a column named `fiducial`.
+
+The semantic meaning of this column depends on the originating data collection protocol.
+
+When the documented protocol defines the recorded value as the physical width of the fiducial (for example, a width recorded in inches), the value represents a physical measurement rather than an identifier.
+
+During survey preparation, such values should be preserved unchanged until representational normalization converts them into the canonical unit required by this specification.
+
+Survey preparation software and LLM-assisted archive construction should therefore interpret documented physical fiducial values as measurements requiring unit conversion, not as categorical identifiers.
 
 Data created under Drafts 0.1 or 0.2 must not be migrated by renaming alone unless the original `fiducial_id` value is confirmed to represent a physical fiducial width. Its source unit must also be established before normalization.
 

@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.3",
+  "survey_id": "SUR-PIL-2026-002",
+  "title": "Pilot Astronomical Survey 002",
+  "survey_type": "Pilot Field Survey",
+  "scientific_question": "Where is the Big Dipper?",
+  "observer_ids": [
+    "OBS-0001"
+  ],
+  "protocol_id": null,
+  "protocol_version": null,
+  "observing_location": {
+    "latitude_deg": 34.4075,
+    "longitude_deg": -118.567222,
+    "elevation": {
+      "value": 1250,
+      "unit": "ft"
+    },
+    "coordinate_reference_system": "WGS84"
+  },
+  "working_representation": {
+    "cross-staff-observation": {
+      "fiducial_width": "in",
+      "staff_reading": "in"
+    }
+  },
+  "observation_tables": [
+    {
+      "path": "observations/cross-staff-observation.csv",
+      "instrument_instance_id": "INS-0001",
+      "observation_specification": {
+        "name": "cross-staff-observation",
+        "version": "0.3"
+      }
+    },
+    {
+      "path": "observations/quadrant-observation.csv",
+      "instrument_instance_id": "INS-0002",
+      "observation_specification": {
+        "name": "quadrant-observation",
+        "version": "UNSPECIFIED"
+      }
+    },
+    {
+      "path": "observations/compass-observation.csv",
+      "instrument_instance_id": "INS-0005",
+      "observation_specification": {
+        "name": "compass-observation",
+        "version": "UNSPECIFIED"
+      },
+      "measurement_reference": {
+        "azimuth_reference": "magnetic_north",
+        "magnetic_declination_deg": 11.5,
+        "declination_sign_convention": "east_positive",
+        "source": "Google Search (magnetic declination looked up for the survey's latitude/longitude)"
+      }
+    }
+  ],
+  "site_id": null,
+  "started_at": "2026-07-28T04:13:30Z",
+  "ended_at": "2026-07-28T05:35:52Z",
+  "submitted_at": null,
+  "attachments": [
+    {
+      "attachment_id": "ATT-0001",
+      "path": "attachments/raw_values.txt",
+      "description": "Original mixed-source raw data file with quadrant (INS-0002) and compass (INS-0005, iPhone + clipboard, native Apple Compass app) observations recorded by OBS-0001 (D. Hazelett) in Valencia, CA.",
+      "media_type": "text/plain",
+      "sha256": "d0e65677dbb1c5eaa029de2cc35a427271d193c2ef969090e764e4b9fb2d769c"
+    },
+    {
+      "attachment_id": "ATT-0002",
+      "path": "attachments/raw-cs-values.txt",
+      "description": "Original raw data file with cross-staff (INS-0001) observations recorded by OBS-0001 (D. Hazelett) in Valencia, CA, in imperial inches.",
+      "media_type": "text/plain",
+      "sha256": "633acae3e277e091ff44b5db50f0bd1ce17bd1edc19a88556afcf33fb97e7e58"
+    }
+  ]
+}

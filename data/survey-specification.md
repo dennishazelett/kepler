@@ -10,7 +10,7 @@ The survey, rather than the individual observation, is the object submitted to t
 
 A survey consists of metadata, raw observations, optional notes, and optional supporting materials.
 
----
+------------------------------------------------------------------------
 
 # Design Principles
 
@@ -18,16 +18,16 @@ A survey is designed to answer a scientific question.
 
 The survey determines:
 
-* the purpose of the observations;
-* the required contextual metadata;
-* the observation specification;
-* the expected downstream analyses.
+- the purpose of the observations;
+- the required contextual metadata;
+- the observation specification;
+- the expected downstream analyses.
 
 The canonical dataset records what was measured, not what was inferred.
 
 Derived quantities (angles, celestial coordinates, residuals, predictions, fitted model parameters, etc.) are products of analysis and are not part of the canonical raw observational record.
 
----
+------------------------------------------------------------------------
 
 # Survey Structure
 
@@ -39,19 +39,19 @@ Survey metadata describes the shared context for every observation within the su
 
 Examples include:
 
-* survey identifier
-* survey type
-* scientific question
-* observer(s)
-* instrument instance(s)
-* protocol version
-* observing site
-* submission date
-* schema version
+- survey identifier
+- survey type
+- scientific question
+- observer(s)
+- instrument instance(s)
+- protocol version
+- observing site
+- submission date
+- schema version
 
 Metadata common to every observation should appear here rather than being repeated in the observation table.
 
----
+------------------------------------------------------------------------
 
 ## 2. Raw Observations
 
@@ -59,17 +59,17 @@ The observation table contains the canonical scientific evidence.
 
 Requirements:
 
-* one observation per row;
-* one header row;
-* no embedded formulas;
-* no derived quantities;
-* instrument-native measurements only;
-* stable column definitions;
-* directly appendable to the canonical dataset without manual editing.
+- one observation per row;
+- one header row;
+- no embedded formulas;
+- no derived quantities;
+- instrument-native measurements only;
+- stable column definitions;
+- directly appendable to the canonical dataset without manual editing.
 
 Each survey type defines the observation specification appropriate to its scientific objective.
 
----
+------------------------------------------------------------------------
 
 ## 3. Notes
 
@@ -77,15 +77,15 @@ Narrative observations that cannot be represented naturally within the canonical
 
 Examples include:
 
-* unexpected events;
-* environmental conditions;
-* mechanical issues;
-* observer comments;
-* deviations from protocol.
+- unexpected events;
+- environmental conditions;
+- mechanical issues;
+- observer comments;
+- deviations from protocol.
 
 Notes should reference observations through stable observation identifiers whenever appropriate.
 
----
+------------------------------------------------------------------------
 
 ## 4. Attachments
 
@@ -93,16 +93,16 @@ Optional supporting materials.
 
 Examples include:
 
-* photographs;
-* sketches;
-* calibration targets;
-* scanned notebooks;
-* original working tables;
-* supplementary documentation.
+- photographs;
+- sketches;
+- calibration targets;
+- scanned notebooks;
+- original working tables;
+- supplementary documentation.
 
 Attachments support interpretation but are not part of the canonical observation table.
 
----
+------------------------------------------------------------------------
 
 # Observation
 
@@ -116,9 +116,30 @@ Observations remain instrument-specific.
 
 Kepler preserves the quantities directly measured by each instrument rather than forcing premature translation into a universal measurement format.
 
----
+------------------------------------------------------------------------
 
 # Survey Types
+
+## Choosing a Survey Type
+
+`survey_type` is a concise human-readable classification describing the primary purpose of the survey.
+
+The value should be sufficiently specific to distinguish surveys serving different scientific purposes while remaining stable across repositories and software implementations.
+
+Examples include:
+
+- Instrument Calibration
+- Pilot Field Observation
+- Field Study
+- Astronomical Observation
+- Validation
+- Replication
+- Benchmark
+- Educational Investigation
+- Historical Claim Investigation
+- Foundational Investigation
+
+These examples are illustrative rather than exhaustive. New survey types may be introduced as the scientific program evolves.
 
 All surveys satisfy the same structural specification.
 
@@ -126,7 +147,7 @@ Different survey types answer different scientific questions and therefore colle
 
 Initial survey types include:
 
-## Instrument Calibration Survey
+### Instrument Calibration Survey
 
 Scientific question:
 
@@ -136,14 +157,14 @@ These surveys characterize the performance of a specific measurement system unde
 
 Typical observations may include:
 
-* fiducial selection;
-* instrument reading;
-* reference target identifier;
-* reference geometry.
+- fiducial selection;
+- instrument reading;
+- reference target identifier;
+- reference geometry.
 
 Calibration surveys characterize the complete measurement system, including the observer, instrument instance, and protocol.
 
-## Astronomical Observation Survey
+### Astronomical Observation Survey
 
 Scientific question:
 
@@ -155,13 +176,13 @@ The observation payload will differ from calibration surveys according to the in
 
 Future survey types may include:
 
-* replication surveys;
-* validation surveys;
-* benchmark surveys;
-* educational investigations;
-* other scientifically motivated activities.
+- replication surveys;
+- validation surveys;
+- benchmark surveys;
+- educational investigations;
+- other scientifically motivated activities.
 
----
+------------------------------------------------------------------------
 
 # Canonical Observation Tables
 
@@ -169,13 +190,13 @@ Each survey type defines its own observation specification.
 
 However, every canonical observation table must satisfy the following requirements:
 
-* identical column names for a given specification;
-* identical column order;
-* identical data types;
-* canonical units and formats;
-* no derived variables;
-* no formatting dependencies;
-* directly concatenable with every other accepted table conforming to the same specification.
+- identical column names for a given specification;
+- identical column order;
+- identical data types;
+- canonical units and formats;
+- no derived variables;
+- no formatting dependencies;
+- directly concatenable with every other accepted table conforming to the same specification.
 
 Instrument-specific observation tables may differ from one another while remaining individually standardized.
 
@@ -193,13 +214,13 @@ The original working table may be retained as an attachment. When conversion is 
 
 Fields that do not represent physical quantities use the representation appropriate to their semantic class:
 
-* temporal fields use the canonical date or date-time format declared by the specification;
-* identifiers and categorical fields have no applicable unit;
-* mathematically dimensionless numerical quantities use the unit `1`.
+- temporal fields use the canonical date or date-time format declared by the specification;
+- identifiers and categorical fields have no applicable unit;
+- mathematically dimensionless numerical quantities use the unit `1`.
 
 Temporal values should preserve the precision supported by the source record. A calendar date is valid when only the date is known or scientifically relevant; a date-time should be used when the time is known and required. Precision must not be invented during survey preparation.
 
----
+------------------------------------------------------------------------
 
 # Validation
 
@@ -207,13 +228,13 @@ Every submitted survey should undergo automated validation before acceptance.
 
 Validation includes:
 
-* required metadata;
-* observation specification;
-* data types;
-* canonical units and formats;
-* identifier uniqueness;
-* schema version;
-* referential integrity where applicable.
+- required metadata;
+- observation specification;
+- data types;
+- canonical units and formats;
+- identifier uniqueness;
+- schema version;
+- referential integrity where applicable.
 
 A successful structural validation confirms that a submitted value is represented according to its specification. It cannot independently establish that a contributor converted a source measurement correctly. Survey preparation utilities and conversion records therefore form part of the submission workflow when noncanonical working units were used.
 
@@ -221,7 +242,7 @@ Accepted surveys become immutable components of the scientific record.
 
 Corrections should be represented through new submissions or explicit revision records rather than silent modification of accepted observations.
 
----
+------------------------------------------------------------------------
 
 # Status
 

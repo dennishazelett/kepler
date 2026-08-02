@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Create a canonical-unit copy of a valid Kepler survey archive.
 
-The source archive must declare any noncanonical physical fields in
-``survey.json`` under ``working_representation``. For each declared field, this
-utility reads the canonical unit from the observation JSON Schema referenced by
-``observation_tables``, converts the CSV values, removes
-``working_representation`` from the output metadata, regenerates
+The utility converts supported noncanonical physical quantities to their
+canonical units. Observation-table source units are declared in
+``survey.json.working_representation`` and resolved against the corresponding
+observation JSON Schemas. Structured survey metadata quantities, currently
+``observing_location.elevation``, carry their units directly.
+
+The utility removes ``working_representation`` from the normalized output,
+rewrites supported survey metadata quantities in canonical units, regenerates
 ``checksums.sha256``, and validates both source and output archives using the
 sibling ``validate-survey.py`` utility.
 
@@ -29,7 +32,7 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-NORMALIZER_VERSION = "0.2.0"
+NORMALIZER_VERSION = "0.3.0"
 CHECKSUM_FILENAME = "checksums.sha256"
 VALIDATION_LOG_FILENAME = "validation.log"
 
@@ -119,6 +122,12 @@ def decimal_text(value: Decimal) -> str:
         text = text.rstrip("0").rstrip(".")
     return text
 
+def decimal_json_number(value: Decimal) -> int | float:
+    """Return a JSON-serializable number without unnecessary decimal places."""
+    normalized = value.normalize()
+    if normalized == normalized.to_integral_value():
+        return int(normalized)
+    return float(normalized)
 
 def convert_value(raw: str, source_unit: str, target_unit: str) -> str:
     try:
@@ -133,6 +142,64 @@ def convert_value(raw: str, source_unit: str, target_unit: str) -> str:
         )
     return decimal_text(value * source_factor / target_factor)
 
+def convert_elevation(survey: dict[str, Any]) -> str | None:
+    """Convert observing-location elevation to canonical metres.
+
+    Returns a human-readable report entry when conversion occurs.
+    Returns ``None`` when elevation is absent, null, or already canonical.
+    """
+    observing_location = survey.get("observing_location")
+    if not isinstance(observing_location, dict):
+        return None
+
+    elevation = observing_location.get("elevation")
+    if elevation is None:
+        return None
+
+    if not isinstance(elevation, dict):
+        raise ValueError(
+            "survey.json: observing_location.elevation must be an object or null"
+        )
+
+    value = elevation.get("value")
+    raw_unit = elevation.get("unit")
+
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        raise ValueError(
+            "survey.json: observing_location.elevation.value must be numeric"
+        )
+    if not isinstance(raw_unit, str) or not raw_unit:
+        raise ValueError(
+            "survey.json: observing_location.elevation.unit must be a string"
+        )
+
+    source_unit = normalize_unit_name(raw_unit)
+    source_dimension = UNIT_DEFINITIONS[source_unit][0]
+
+    if source_dimension != "length":
+        raise ValueError(
+            "survey.json: observing_location.elevation.unit "
+            f"{raw_unit!r} is not a length unit"
+        )
+
+    canonical_unit = "m"
+    if source_unit == canonical_unit:
+        return None
+
+    converted_text = convert_value(
+        str(value),
+        source_unit,
+        canonical_unit,
+    )
+
+    converted_decimal = Decimal(converted_text)
+    elevation["value"] = decimal_json_number(converted_decimal)
+    elevation["unit"] = canonical_unit
+
+    return (
+        "survey.json: observing_location.elevation: "
+        f"{source_unit} -> {canonical_unit}"
+    )
 
 def observation_tables(survey: dict[str, Any]) -> list[dict[str, Any]]:
     raw_tables = survey.get("observation_tables")
@@ -157,14 +224,10 @@ def observation_tables(survey: dict[str, Any]) -> list[dict[str, Any]]:
 
 def working_representation(survey: dict[str, Any]) -> dict[str, dict[str, str]]:
     raw = survey.get("working_representation")
-    if raw is None:
-        raise ValueError(
-            "survey.json has no working_representation; the archive is already canonical "
-            "or its noncanonical units are undocumented"
-        )
-    if not isinstance(raw, dict) or not raw:
-        raise ValueError("working_representation must be a nonempty object")
-
+    if raw in (None, {}):
+        return {}
+    if not isinstance(raw, dict):
+        raise ValueError("working_representation must be an object")
     parsed: dict[str, dict[str, str]] = {}
     for specification_name, fields in raw.items():
         if not isinstance(specification_name, str) or not specification_name:
@@ -388,7 +451,11 @@ def main() -> int:
         output_survey = load_json(output_survey_path)
         conversion_report: list[str] = []
 
-        for specification_name, field_units in working.items():
+        elevation_change = convert_elevation(output_survey)
+        if elevation_change is not None:
+            conversion_report.append(elevation_change)
+
+        for specification_name, field_units in working.items():            
             schema_path = schemas_dir / f"{specification_name}.schema.json"
             schema = load_json(schema_path)
             for table in manifest_by_spec[specification_name]:
@@ -415,12 +482,25 @@ def main() -> int:
         run_validator(validator, output_dir, schemas_dir)
 
         verified = load_json(output_survey_path)
+
         if "working_representation" in verified:
             raise ValueError("Output still contains working_representation")
 
-        if not conversion_report:
-            raise ValueError("No values were converted; refusing to remove working_representation")
+        verified_location = verified.get("observing_location")
+        if isinstance(verified_location, dict):
+            verified_elevation = verified_location.get("elevation")
+            if isinstance(verified_elevation, dict):
+                verified_unit = verified_elevation.get("unit")
+                if verified_unit != "m":
+                    raise ValueError(
+                        "Output elevation is not represented in canonical metres"
+                    )
 
+        if not conversion_report:
+            raise ValueError(
+                "No noncanonical values required conversion"
+            )
+            
         print(f"PASS: canonical archive written to {output_dir}")
         for item in conversion_report:
             print(f"- {item}")

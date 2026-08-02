@@ -1,0 +1,1250 @@
+---
+title: "Exploratory Analysis: SUR-PIL-2026-002"
+author: "Kepler"
+subtitle: "Canonical archive analysis"
+engine: julia
+format:
+  html:
+    toc: true
+    code-fold: false
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# 1. Purpose
+
+This notebook provides an exploratory analysis of the validated canonical survey
+archive for `SUR-PIL-2026-002`.
+
+Its purposes are to:
+
+* confirm that the expected canonical archive has been loaded;
+* inspect survey metadata and observation tables;
+* review archive integrity;
+* derive standardized angular quantities from instrument-native observations;
+* summarize observations by participant, instrument, target, and time;
+* visualize the structure and coverage of the survey;
+* record preliminary interpretation without performing astronomical inference.
+
+This notebook does not estimate celestial coordinates, fit astronomical models,
+or compare observations with external catalog values.
+
+# 2. Executed Survey
+
+The survey identity and scientific question are read from `survey.json`. The
+canonical archive is the sole source of survey data for this notebook.
+
+# 3. Julia Environment
+
+```{julia}
+using CSV
+using CairoMakie
+using DataFrames
+using Dates
+using JSON3
+using Pkg
+using Statistics
+
+nothing
+```
+
+# 4. Canonical Archive
+
+```{julia}
+archive_root = joinpath("..", "SUR-PIL-2026-002")
+survey_path = joinpath(archive_root, "survey.json")
+
+isdir(archive_root) ||
+    error("Canonical archive directory not found: $(archive_root)")
+
+isfile(survey_path) ||
+    error("Survey metadata file not found: $(survey_path)")
+
+nothing
+```
+
+# 5. Survey Metadata
+
+## 5.1 Load `survey.json`
+
+```{julia}
+survey = JSON3.read(read(survey_path, String))
+
+nothing
+```
+
+## 5.2 Survey Summary
+
+```{julia}
+println("Survey")
+println("------")
+println("Schema version: ", survey.schema_version)
+println("Survey ID: ", survey.survey_id)
+println("Title: ", survey.title)
+println("Survey type: ", survey.survey_type)
+println("Scientific question: ", survey.scientific_question)
+println()
+
+println("Started: ", survey.started_at)
+println("Ended: ", survey.ended_at)
+println()
+
+println("Observers: ", join(String.(survey.observer_ids), ", "))
+println("Observation tables: ", length(survey.observation_tables))
+println("Attachments: ", length(survey.attachments))
+println()
+
+println("Observing location:")
+println("  Latitude: ", survey.observing_location.latitude_deg)
+println("  Longitude: ", survey.observing_location.longitude_deg)
+println(
+    "  Elevation: ",
+    survey.observing_location.elevation.value,
+    " ",
+    survey.observing_location.elevation.unit
+)
+println(
+    "  Coordinate reference system: ",
+    survey.observing_location.coordinate_reference_system
+)
+
+nothing
+```
+
+# 6. Observation Tables
+
+Observation tables are identified by observation specification rather than by
+their position in `survey.observation_tables` or by survey-specific instrument
+instance IDs.
+
+## 6.1 Load Declared Tables
+
+```{julia}
+table_entries_by_specification = Dict{String,Any}()
+observation_tables_by_specification = Dict{String,DataFrame}()
+
+for entry in survey.observation_tables
+
+    specification_name =
+        String(entry.observation_specification.name)
+
+    haskey(table_entries_by_specification, specification_name) &&
+        error(
+            "Multiple observation tables declared for specification: " *
+            specification_name
+        )
+
+    table_path = joinpath(archive_root, String(entry.path))
+
+    isfile(table_path) ||
+        error("Declared observation table not found: $(table_path)")
+
+    table_entries_by_specification[specification_name] = entry
+
+    observation_tables_by_specification[specification_name] =
+        CSV.read(table_path, DataFrame)
+
+end
+
+nothing
+```
+
+## 6.2 Required Observation Specifications
+
+```{julia}
+required_specifications = [
+    "quadrant-observation",
+    "compass-observation",
+    "cross-staff-observation"
+]
+
+for specification_name in required_specifications
+
+    haskey(
+        observation_tables_by_specification,
+        specification_name
+    ) || error(
+        "Required observation specification not found: " *
+        specification_name
+    )
+
+end
+
+nothing
+```
+
+## 6.3 Named Canonical Tables
+
+```{julia}
+quadrant_raw =
+    observation_tables_by_specification["quadrant-observation"]
+
+compass_raw =
+    observation_tables_by_specification["compass-observation"]
+
+crossstaff_raw =
+    observation_tables_by_specification["cross-staff-observation"]
+
+nothing
+```
+
+## 6.4 Observation Table Inventory
+
+```{julia}
+table_inventory = DataFrame(
+    observation_specification = String[],
+    specification_version = String[],
+    instrument_instance_id = String[],
+    path = String[],
+    rows = Int[],
+    columns = Int[]
+)
+
+for entry in survey.observation_tables
+
+    specification_name =
+        String(entry.observation_specification.name)
+
+    table =
+        observation_tables_by_specification[specification_name]
+
+    push!(
+        table_inventory,
+        (
+            specification_name,
+            String(entry.observation_specification.version),
+            String(entry.instrument_instance_id),
+            String(entry.path),
+            nrow(table),
+            ncol(table)
+        )
+    )
+
+end
+
+table_inventory
+```
+
+# 7. Archive Integrity Review
+
+This section reviews the loaded archive before derived quantities are created.
+The checks are descriptive and do not modify the canonical tables.
+
+## 7.1 Table Schemas
+
+```{julia}
+schema_summary = DataFrame(
+    observation_specification = String[],
+    column = String[],
+    element_type = String[]
+)
+
+for specification_name in required_specifications
+
+    table =
+        observation_tables_by_specification[specification_name]
+
+    for column in names(table)
+
+        push!(
+            schema_summary,
+            (
+                specification_name,
+                String(column),
+                string(eltype(table[!, column]))
+            )
+        )
+
+    end
+
+end
+
+schema_summary
+```
+
+## 7.2 Observation Counts
+
+```{julia}
+observation_counts = DataFrame(
+    instrument = ["Quadrant", "Compass", "Cross-staff"],
+    observation_count = [
+        nrow(quadrant_raw),
+        nrow(compass_raw),
+        nrow(crossstaff_raw)
+    ]
+)
+
+observation_counts
+```
+
+## 7.3 Participant Summary
+
+```{julia}
+declared_observers = DataFrame(
+    observer_id = String.(survey.observer_ids)
+)
+
+declared_observers
+```
+
+```{julia}
+function observer_counts(
+    table::DataFrame,
+    instrument_name::String
+)
+    :observer_id in propertynames(table) ||
+        error(
+            "observer_id is absent from the $(instrument_name) table."
+        )
+
+    result = combine(
+        groupby(table, :observer_id),
+        nrow => :observation_count
+    )
+
+    insertcols!(
+        result,
+        1,
+        :instrument => fill(instrument_name, nrow(result))
+    )
+
+    return result
+end
+
+participant_observation_counts = vcat(
+    observer_counts(quadrant_raw, "Quadrant"),
+    observer_counts(compass_raw, "Compass"),
+    observer_counts(crossstaff_raw, "Cross-staff")
+)
+
+participant_observation_counts
+```
+
+## 7.4 Missing Values
+
+```{julia}
+missing_value_summary = DataFrame(
+    observation_specification = String[],
+    column = String[],
+    missing_count = Int[],
+    missing_fraction = Float64[]
+)
+
+for specification_name in required_specifications
+
+    table =
+        observation_tables_by_specification[specification_name]
+
+    for column in names(table)
+
+        values = table[!, column]
+        missing_count = count(ismissing, values)
+
+        push!(
+            missing_value_summary,
+            (
+                specification_name,
+                String(column),
+                missing_count,
+                nrow(table) == 0 ?
+                    0.0 :
+                    missing_count / nrow(table)
+            )
+        )
+
+    end
+
+end
+
+missing_value_summary
+```
+
+## 7.5 Exact Duplicate Rows
+
+```{julia}
+duplicate_row_summary = DataFrame(
+    observation_specification = String[],
+    rows = Int[],
+    unique_rows = Int[],
+    duplicate_rows = Int[]
+)
+
+for specification_name in required_specifications
+
+    table =
+        observation_tables_by_specification[specification_name]
+
+    unique_table = unique(table)
+
+    push!(
+        duplicate_row_summary,
+        (
+            specification_name,
+            nrow(table),
+            nrow(unique_table),
+            nrow(table) - nrow(unique_table)
+        )
+    )
+
+end
+
+duplicate_row_summary
+```
+
+## 7.6 Observation Identifier Review
+
+```{julia}
+identifier_summary = DataFrame(
+    observation_specification = String[],
+    observations = Int[],
+    missing_observation_ids = Int[],
+    unique_nonmissing_observation_ids = Int[],
+    duplicated_nonmissing_observation_ids = Int[]
+)
+
+for specification_name in required_specifications
+
+    table =
+        observation_tables_by_specification[specification_name]
+
+    :observation_id in propertynames(table) ||
+        error(
+            "observation_id is absent from the " *
+            specification_name *
+            " table."
+        )
+
+    ids = table.observation_id
+    nonmissing_ids = collect(skipmissing(ids))
+    unique_ids = unique(nonmissing_ids)
+
+    push!(
+        identifier_summary,
+        (
+            specification_name,
+            nrow(table),
+            count(ismissing, ids),
+            length(unique_ids),
+            length(nonmissing_ids) - length(unique_ids)
+        )
+    )
+
+end
+
+identifier_summary
+```
+
+# 8. Standardized Angular Observations
+
+The canonical tables are not modified. Analysis copies are created with
+standardized angular variables.
+
+## 8.1 Analysis Copies
+
+```{julia}
+quadrant_analysis = copy(quadrant_raw)
+compass_analysis = copy(compass_raw)
+crossstaff_analysis = copy(crossstaff_raw)
+
+nothing
+```
+
+## 8.2 Quadrant Altitude
+
+The canonical quadrant table records its angular observation in `angle_deg`.
+The analysis copy exposes the same values as `altitude_deg`.
+
+```{julia}
+quadrant_analysis.altitude_deg =
+    Float64.(quadrant_analysis.angle_deg)
+
+nothing
+```
+
+## 8.3 Compass Azimuth
+
+The canonical compass table records its angular observation in `angle_deg`.
+The analysis copy exposes the same values as `azimuth_deg`.
+
+```{julia}
+compass_entry =
+    table_entries_by_specification["compass-observation"]
+
+measurement_reference =
+    compass_entry.measurement_reference
+
+String(measurement_reference.azimuth_reference) == "magnetic_north" ||
+    error("Unsupported compass azimuth reference")
+
+String(measurement_reference.declination_sign_convention) == "east_positive" ||
+    error("Unsupported magnetic-declination sign convention")
+
+magnetic_declination_deg =
+    Float64(measurement_reference.magnetic_declination_deg)
+
+compass_analysis.magnetic_azimuth_deg =
+    Float64.(compass_analysis.angle_deg)
+
+compass_analysis.true_azimuth_deg =
+    mod.(
+        compass_analysis.magnetic_azimuth_deg .+
+        magnetic_declination_deg,
+        360.0
+    )
+
+nothing
+```
+
+## 8.4 Cross-Staff Angular Separation
+
+The cross-staff analysis uses the geometric relationship
+
+[
+\theta =
+2 \arctan\left(
+\frac{w}{2d}
+\right),
+]
+
+where (w) is `fiducial_width`, (d) is `staff_reading`, and (\theta)
+is converted from radians to degrees.
+
+```{julia}
+crossstaff_analysis.angular_separation_deg =
+    rad2deg.(
+        2 .* atan.(
+            crossstaff_analysis.fiducial_width ./
+            (2 .* crossstaff_analysis.staff_reading)
+        )
+    )
+
+nothing
+```
+
+## 8.5 Simplified Cross-Staff Target Fields
+
+```{julia}
+primary_target_column =
+    Symbol("field_observation.primary_target_id")
+
+secondary_target_column =
+    Symbol("field_observation.secondary_target_id")
+
+primary_target_column in propertynames(crossstaff_analysis) ||
+    error("Primary target column not found in cross-staff observations.")
+
+secondary_target_column in propertynames(crossstaff_analysis) ||
+    error("Secondary target column not found in cross-staff observations.")
+
+rename!(
+    crossstaff_analysis,
+    primary_target_column => :primary_target_id,
+    secondary_target_column => :secondary_target_id
+)
+
+nothing
+```
+
+## 8.6 Derived Variable Review
+
+```{julia}
+select(
+    quadrant_analysis,
+    :observation_id,
+    :target_id,
+    :angle_deg,
+    :altitude_deg
+)
+```
+
+```{julia}
+select(
+    compass_analysis,
+    :observation_id,
+    :target_name,
+    :angle_deg,
+    :true_azimuth_deg
+)
+```
+
+```{julia}
+select(
+    crossstaff_analysis,
+    :observation_id,
+    :primary_target_id,
+    :secondary_target_id,
+    :fiducial_width,
+    :staff_reading,
+    :angular_separation_deg
+)
+```
+
+# 9. Descriptive Summaries
+
+## 9.1 Quadrant Summary
+
+```{julia}
+describe(
+    select(
+        quadrant_analysis,
+        :altitude_deg
+    )
+)
+```
+
+## 9.2 Compass Summary
+
+```{julia}
+describe(
+    select(
+        compass_analysis,
+        :true_azimuth_deg
+    )
+)
+```
+
+## 9.3 Cross-Staff Summary
+
+```{julia}
+describe(
+    select(
+        crossstaff_analysis,
+        :fiducial_width,
+        :staff_reading,
+        :angular_separation_deg
+    )
+)
+```
+
+## 9.4 Target-Level Altitude Summary
+
+```{julia}
+quadrant_target_summary = combine(
+    groupby(quadrant_analysis, :target_id),
+    :altitude_deg => length => :observation_count,
+    :altitude_deg => mean => :mean_altitude_deg,
+    :altitude_deg => minimum => :minimum_altitude_deg,
+    :altitude_deg => maximum => :maximum_altitude_deg
+)
+
+sort!(quadrant_target_summary, :target_id)
+
+quadrant_target_summary
+```
+
+## 9.5 Target-Level Azimuth Summary
+
+```{julia}
+compass_target_summary = combine(
+    groupby(compass_analysis, :target_name),
+    :true_azimuth_deg => length => :observation_count,
+    :true_azimuth_deg => mean => :mean_azimuth_deg,
+    :true_azimuth_deg => minimum => :minimum_azimuth_deg,
+    :true_azimuth_deg => maximum => :maximum_azimuth_deg
+)
+
+sort!(compass_target_summary, :target_name)
+
+compass_target_summary
+```
+
+## 9.6 Cross-Staff Pair Summary
+
+```{julia}
+crossstaff_pair_summary = select(
+    crossstaff_analysis,
+    :observation_id,
+    :primary_target_id,
+    :secondary_target_id,
+    :angular_separation_deg
+)
+
+sort!(
+    crossstaff_pair_summary,
+    :angular_separation_deg
+)
+
+crossstaff_pair_summary
+```
+
+# 10. Exploratory Figures
+
+## 10.1 Survey Timeline
+
+```{julia}
+parse_utc_timestamp(value) =
+    DateTime(replace(String(value), "Z" => ""))
+
+quadrant_timeline = DataFrame(
+    timestamp =
+        parse_utc_timestamp.(quadrant_analysis.observed_at),
+    instrument =
+        fill("Quadrant", nrow(quadrant_analysis)),
+    observer_id =
+        String.(quadrant_analysis.observer_id),
+    target =
+        String.(quadrant_analysis.target_id)
+)
+
+compass_timeline = DataFrame(
+    timestamp =
+        parse_utc_timestamp.(compass_analysis.observed_at),
+    instrument =
+        fill("Compass", nrow(compass_analysis)),
+    observer_id =
+        String.(compass_analysis.observer_id),
+    target =
+        String.(compass_analysis.target_name)
+)
+
+crossstaff_timeline = DataFrame(
+    timestamp =
+        parse_utc_timestamp.(crossstaff_analysis.observed_at),
+    instrument =
+        fill("Cross-staff", nrow(crossstaff_analysis)),
+    observer_id =
+        String.(crossstaff_analysis.observer_id),
+    target =
+        String.(crossstaff_analysis.primary_target_id) .*
+        " – " .*
+        String.(crossstaff_analysis.secondary_target_id)
+)
+
+survey_timeline = vcat(
+    quadrant_timeline,
+    compass_timeline,
+    crossstaff_timeline
+)
+
+sort!(survey_timeline, :timestamp)
+
+instrument_order = [
+    "Quadrant",
+    "Compass",
+    "Cross-staff"
+]
+
+instrument_position = Dict(
+    instrument => index
+    for (index, instrument) in enumerate(instrument_order)
+)
+
+survey_timeline.instrument_position = [
+    instrument_position[instrument]
+    for instrument in survey_timeline.instrument
+]
+
+survey_timeline
+```
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "Observation time",
+    ylabel = "Instrument",
+    title = "Survey timeline"
+)
+
+scatter!(
+    ax,
+    survey_timeline.timestamp,
+    survey_timeline.instrument_position
+)
+
+ax.yticks = (
+    collect(1:length(instrument_order)),
+    instrument_order
+)
+
+fig
+```
+
+## 10.2 Paired Local-Horizon Coverage
+
+Altitude and azimuth observations are summarized by observer and target before
+being paired. No coordinate pair is inferred for a target absent from either
+instrument table.
+
+```{julia}
+mean_altitude_by_target = combine(
+    groupby(
+        quadrant_analysis,
+        [:observer_id, :target_id]
+    ),
+    :altitude_deg => mean => :altitude_deg
+)
+
+mean_azimuth_by_target = combine(
+    groupby(
+        compass_analysis,
+        [:observer_id, :target_name]
+    ),
+    :true_azimuth_deg => mean => :true_azimuth_deg
+)
+
+rename!(
+    mean_azimuth_by_target,
+    :target_name => :target_id
+)
+
+paired_horizon_observations = innerjoin(
+    mean_altitude_by_target,
+    mean_azimuth_by_target,
+    on = [:observer_id, :target_id]
+)
+
+sort!(
+    paired_horizon_observations,
+    [:observer_id, :target_id]
+)
+
+paired_horizon_observations
+```
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "True Azimuth (degrees)",
+    ylabel = "Altitude (degrees)",
+    title = "Paired local-horizon coverage"
+)
+
+scatter!(
+    ax,
+    paired_horizon_observations.true_azimuth_deg,
+    paired_horizon_observations.altitude_deg
+)
+
+for row in eachrow(paired_horizon_observations)
+    text!(
+        ax,
+        row.true_azimuth_deg,
+        row.altitude_deg;
+        text = String(row.target_id),
+        align = (:left, :bottom)
+    )
+end
+
+fig
+```
+
+## 10.3 Altitude Distribution
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "Altitude (degrees)",
+    ylabel = "Observation count",
+    title = "Quadrant altitude distribution"
+)
+
+hist!(
+    ax,
+    quadrant_analysis.altitude_deg
+)
+
+fig
+```
+
+## 10.4 Azimuth Distribution
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "True azimuth (degrees)",
+    ylabel = "Observation count",
+    title = "Compass azimuth distribution"
+)
+
+hist!(
+    ax,
+    compass_analysis.true_azimuth_deg
+)
+
+fig
+```
+
+## 10.5 Angular-Separation Distribution
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "Angular separation (degrees)",
+    ylabel = "Observation count",
+    title = "Cross-staff angular-separation distribution"
+)
+
+hist!(
+    ax,
+    crossstaff_analysis.angular_separation_deg
+)
+
+fig
+```
+
+## 10.6 Angular-Separation Comparison
+
+```{julia}
+angular_separation_comparison = select(
+    crossstaff_analysis,
+    :primary_target_id,
+    :secondary_target_id,
+    :angular_separation_deg
+)
+
+angular_separation_comparison.target_pair =
+    String.(angular_separation_comparison.primary_target_id) .*
+    " – " .*
+    String.(angular_separation_comparison.secondary_target_id)
+
+sort!(
+    angular_separation_comparison,
+    :angular_separation_deg
+)
+
+angular_separation_comparison
+```
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "Target pair",
+    ylabel = "Angular separation (degrees)",
+    title = "Cross-staff angular separations",
+    xticklabelrotation = π / 4
+)
+
+positions =
+    collect(1:nrow(angular_separation_comparison))
+
+barplot!(
+    ax,
+    positions,
+    angular_separation_comparison.angular_separation_deg
+)
+
+ax.xticks = (
+    positions,
+    angular_separation_comparison.target_pair
+)
+
+fig
+```
+
+## 10.7 Target Frequency
+
+```{julia}
+quadrant_target_counts = combine(
+    groupby(quadrant_analysis, :target_id),
+    nrow => :observation_count
+)
+
+rename!(
+    quadrant_target_counts,
+    :target_id => :target
+)
+
+quadrant_target_counts.instrument .= "Quadrant"
+
+compass_target_counts = combine(
+    groupby(compass_analysis, :target_name),
+    nrow => :observation_count
+)
+
+rename!(
+    compass_target_counts,
+    :target_name => :target
+)
+
+compass_target_counts.instrument .= "Compass"
+
+crossstaff_targets = vcat(
+    DataFrame(
+        target =
+            String.(crossstaff_analysis.primary_target_id)
+    ),
+    DataFrame(
+        target =
+            String.(crossstaff_analysis.secondary_target_id)
+    )
+)
+
+crossstaff_target_counts = combine(
+    groupby(crossstaff_targets, :target),
+    nrow => :observation_count
+)
+
+crossstaff_target_counts.instrument .= "Cross-staff"
+
+instrument_target_counts = vcat(
+    quadrant_target_counts,
+    compass_target_counts,
+    crossstaff_target_counts
+)
+
+survey_target_frequency = combine(
+    groupby(instrument_target_counts, :target),
+    :observation_count => sum => :observation_count
+)
+
+sort!(
+    survey_target_frequency,
+    :observation_count,
+    rev = true
+)
+
+survey_target_frequency
+```
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "Target",
+    ylabel = "Observation count",
+    title = "Survey-wide target frequency",
+    xticklabelrotation = π / 4
+)
+
+positions =
+    collect(1:nrow(survey_target_frequency))
+
+barplot!(
+    ax,
+    positions,
+    survey_target_frequency.observation_count
+)
+
+ax.xticks = (
+    positions,
+    survey_target_frequency.target
+)
+
+fig
+```
+
+## 10.8 Observation Network
+
+Cross-staff targets are represented as nodes and measured target pairs as
+edges. Node coordinates are assigned only for visualization and have no
+astronomical meaning.
+
+```{julia}
+network_edges = select(
+    crossstaff_analysis,
+    :primary_target_id,
+    :secondary_target_id,
+    :angular_separation_deg,
+    :observer_id,
+    :observation_id
+)
+
+network_targets = sort(
+    unique(
+        vcat(
+            String.(network_edges.primary_target_id),
+            String.(network_edges.secondary_target_id)
+        )
+    )
+)
+
+network_angles = range(
+    0,
+    2π;
+    length = length(network_targets) + 1
+)[1:end-1]
+
+network_coordinates = Dict(
+    target => (
+        cos(angle),
+        sin(angle)
+    )
+    for (target, angle) in zip(
+        network_targets,
+        network_angles
+    )
+)
+
+network_edges
+```
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    title = "Cross-staff observation network",
+    aspect = DataAspect()
+)
+
+hidedecorations!(ax)
+hidespines!(ax)
+
+for row in eachrow(network_edges)
+
+    source =
+        network_coordinates[String(row.primary_target_id)]
+
+    destination =
+        network_coordinates[String(row.secondary_target_id)]
+
+    lines!(
+        ax,
+        [source[1], destination[1]],
+        [source[2], destination[2]]
+    )
+
+end
+
+node_x = [
+    network_coordinates[target][1]
+    for target in network_targets
+]
+
+node_y = [
+    network_coordinates[target][2]
+    for target in network_targets
+]
+
+scatter!(
+    ax,
+    node_x,
+    node_y;
+    markersize = 18
+)
+
+text!(
+    ax,
+    node_x,
+    node_y;
+    text = network_targets,
+    align = (:center, :bottom)
+)
+
+fig
+```
+
+## 10.9 Instrument Participation
+
+```{julia}
+fig = Figure()
+
+ax = Axis(
+    fig[1, 1],
+    xlabel = "Instrument",
+    ylabel = "Observation count",
+    title = "Instrument participation"
+)
+
+positions =
+    collect(1:nrow(observation_counts))
+
+barplot!(
+    ax,
+    positions,
+    observation_counts.observation_count
+)
+
+ax.xticks = (
+    positions,
+    observation_counts.instrument
+)
+
+fig
+```
+
+# 11. Initial Interpretation Prompts
+
+## 11.1 Survey Execution
+
+* Did the sequence of observations match the intended observing procedure?
+* Were the three instruments used throughout the session or in separate blocks?
+* Were there gaps or interruptions?
+* Did all declared observers participate in the recorded observations?
+
+## 11.2 Angular Coverage
+
+* What ranges of altitude, azimuth, and angular separation were recorded?
+* Are observations distributed across those ranges or concentrated narrowly?
+* Are any values inconsistent with neighboring observations?
+* Did the pilot exercise a substantial part of each instrument's practical range?
+
+## 11.3 Target Coverage
+
+* Which targets dominate the survey?
+* Which targets were observed with more than one instrument?
+* Which target pairs were measured with the cross-staff?
+* Does the cross-staff observation network contain disconnected or weakly connected targets?
+
+## 11.4 Data Quality
+
+* Are missing values confined to optional fields?
+* Are observation identifiers unique within each table?
+* Are there exact duplicate rows?
+* Are timestamps ordered and plausible?
+* Are observer and instrument identifiers consistent with the survey metadata?
+
+## 11.5 Follow-Up Work
+
+* Which observations should be repeated?
+* Which instrument procedures require clarification?
+* Which derived quantities require independent validation?
+* Which analyses belong in a later scientific-inference notebook?
+
+# 12. Reproducibility Record
+
+## 12.1 Julia Version and Platform
+
+```{julia}
+versioninfo()
+```
+
+## 12.2 Active Project
+
+```{julia}
+Pkg.project()
+```
+
+## 12.3 Package Status
+
+```{julia}
+Pkg.status()
+```
+
+## 12.4 Canonical Survey Input
+
+```{julia}
+println("Archive directory: ", abspath(archive_root))
+println("Survey metadata: ", abspath(survey_path))
+println("Survey ID: ", survey.survey_id)
+println("Observation tables loaded:")
+
+for entry in survey.observation_tables
+    println(
+        "  ",
+        entry.observation_specification.name,
+        " v",
+        entry.observation_specification.version,
+        ": ",
+        entry.path
+    )
+end
+
+nothing
+```

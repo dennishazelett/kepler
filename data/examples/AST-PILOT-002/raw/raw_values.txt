@@ -1,0 +1,32 @@
+# OBS-0001 D. Hazelett
+# INS-002 quadrant
+# INS-005 iphone+clipboard & setting:magneticN (first time use)
+# collected in Valencia, CA 07/27
+# location 34°24'27"N 118°34'2"W
+# declination 11.5° (11° 29' East)
+# 1250 ft elevation
+# first line header
+## notes: iPhone was used as compass instrument with native 
+## apple compass app. No version available. I discovered the 
+## quadrant is best used w/ both eyes open. Greater light 
+## sensitivity and easier alignment. Same w/ clipboard but take
+## care to choose the right double image.
+instrument,object,angle,utc-date,utc-time
+quadrant,Dubhe,32.25,7/28/2026,04:13:30
+quadrant,Merok,30.5,7/28/2026,04:15:58
+quadrant,Phecda,36.75,7/28/2026,04:17:28
+quadrant,Megrez,39.25,7/28/2026,04:19:05
+quadrant,Alioth,44.75,7/28/2026,04:20:08
+quadrant,Mizar,47.9,7/28/2026,04:22:02
+quadrant,Alkaid,53.25,7/28/2026,04:23:40
+compass-iPhone-clipb,Dubhe,316,7/28/2026,04:26:26
+compass-iPhone-clipb,Merok,310,7/28/2026,04:28:20
+compass-iPhone-clipb,Phecda,306,7/28/2026,04:29:12
+compass-iPhone-clipb,Megrez,309,7/28/2026,04:32:12
+compass-iPhone-clipb,Alioth,305,7/28/2026,04:34:16
+compass-iPhone-clipb,Mizar,304,7/28/2026,04:34:50
+compass-iPhone-clipb,Alkaid,297,7/28/2026,04:35:55
+compass-iPhone-clipb,Polaris,345,7/28/2026,04:37:00
+compass-iPhone-clipb,Kochab,329,7/28/2026,04:37:45
+quadrant,Polaris,34.25,7/28/2026,04:41:50
+quadrant,Kochab,46.25,7/28/2026,04:43:14

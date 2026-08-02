@@ -21,7 +21,7 @@
     "schema_version": {
       "type": "string",
       "description": "Version of this survey metadata schema.",
-      "pattern": "^0\\.2$"
+      "pattern": "^0\\.3$"
     },
 
     "survey_id": {
@@ -92,13 +92,35 @@
           "maximum": 180
         },
 
-        "elevation_m": {
+        "elevation": {
           "type": [
-            "number",
+            "object",
             "null"
-          ]
+          ],
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string",
+              "enum": [
+                "mm",
+                "cm",
+                "m",
+                "km",
+                "in",
+                "ft",
+                "yd"
+              ]
+            }
+          }
         },
-
+        
         "coordinate_reference_system": {
           "type": "string",
           "enum": [

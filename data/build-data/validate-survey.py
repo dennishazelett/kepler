@@ -36,7 +36,7 @@ except ImportError as exc:  # pragma: no cover
 SURVEY_SCHEMA_FILENAME = "survey.schema.json"
 VALIDATION_LOG_FILENAME = "validation.log"
 CHECKSUM_FILENAME = "checksums.sha256"
-VALIDATOR_VERSION = "0.3.1"
+VALIDATOR_VERSION = "0.4.0"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -497,61 +497,160 @@ def evaluate_submission_readiness(
 ) -> tuple[bool, list[str], list[str]]:
     """Evaluate whether a structurally valid survey uses canonical units.
 
-    Returns (submission_ready, reasons, errors). Declared working units are
-    allowed in preliminary archives, but they must refer to real physical
-    fields and recognized canonical units in the corresponding schemas.
+    Returns ``(submission_ready, reasons, errors)``.
+
+    Noncanonical but supported units make an archive preliminary.
+    Unsupported, malformed, or dimensionally inappropriate unit declarations
+    make the archive invalid.
     """
-    working = survey.get("working_representation")
-    if working in (None, {}):
-        return True, [], []
-    if not isinstance(working, dict):
-        return False, [], ["survey.json: working_representation must be an object"]
-
-    tables = survey.get("observation_tables")
-    if not isinstance(tables, list):
-        return False, [], ["survey.json: observation_tables must be an array"]
-
-    by_name: dict[str, dict[str, Any]] = {}
-    for table in tables:
-        if not isinstance(table, dict):
-            continue
-        spec = table.get("observation_specification")
-        if isinstance(spec, dict) and isinstance(spec.get("name"), str):
-            by_name[spec["name"]] = table
-
     reasons: list[str] = []
     errors: list[str] = []
-    for schema_name, fields in working.items():
-        if not isinstance(schema_name, str) or not isinstance(fields, dict):
-            errors.append("survey.json: each working_representation entry must map a specification name to an object")
-            continue
-        if schema_name not in by_name:
-            errors.append(f"survey.json: working_representation references unknown observation specification {schema_name!r}")
-            continue
-        schema_path = schemas_dir / f"{schema_name}.schema.json"
-        try:
-            schema = load_schema(schema_path)
-        except ValueError as exc:
-            errors.append(str(exc))
-            continue
-        for field_name, source_unit in fields.items():
-            if not isinstance(field_name, str) or not isinstance(source_unit, str) or not source_unit:
-                errors.append(f"survey.json: invalid working unit declaration for {schema_name!r}")
-                continue
-            field_schema = property_schema_for_column(schema, field_name)
-            if not field_schema:
-                errors.append(f"survey.json: working_representation field {schema_name}.{field_name} is not defined by the observation schema")
-                continue
-            canonical_unit = field_schema.get("x-kepler-unit")
-            dimension = field_schema.get("x-kepler-dimension")
-            if not isinstance(canonical_unit, str):
-                errors.append(f"survey.json: working_representation field {schema_name}.{field_name} has no canonical unit in the observation schema")
-                continue
-            if not isinstance(dimension, str):
-                errors.append(f"survey.json: working_representation field {schema_name}.{field_name} is not declared as a physical quantity")
-                continue
-            if source_unit != canonical_unit:
-                reasons.append(f"{schema_name}.{field_name} uses {source_unit} instead of canonical {canonical_unit}")
+
+    # Survey-level structured metadata quantities.
+    observing_location = survey.get("observing_location")
+    if isinstance(observing_location, dict):
+        elevation = observing_location.get("elevation")
+
+        if elevation is not None:
+            if not isinstance(elevation, dict):
+                errors.append(
+                    "survey.json: observing_location.elevation must be an object or null"
+                )
+            else:
+                value = elevation.get("value")
+                unit = elevation.get("unit")
+
+                if not isinstance(value, (int, float)) or isinstance(value, bool):
+                    errors.append(
+                        "survey.json: observing_location.elevation.value must be numeric"
+                    )
+
+                supported_length_units = {
+                    "mm",
+                    "cm",
+                    "m",
+                    "km",
+                    "in",
+                    "ft",
+                    "yd",
+                }
+
+                if not isinstance(unit, str) or not unit:
+                    errors.append(
+                        "survey.json: observing_location.elevation.unit must be a string"
+                    )
+                elif unit not in supported_length_units:
+                    errors.append(
+                        "survey.json: observing_location.elevation.unit "
+                        f"{unit!r} is not a supported length unit"
+                    )
+                elif unit != "m":
+                    reasons.append(
+                        "observing_location.elevation uses "
+                        f"{unit} instead of canonical m"
+                    )
+
+    # Observation-table working representations.
+    working = survey.get("working_representation")
+
+    if working not in (None, {}):
+        if not isinstance(working, dict):
+            errors.append(
+                "survey.json: working_representation must be an object"
+            )
+        else:
+            tables = survey.get("observation_tables")
+            if not isinstance(tables, list):
+                errors.append(
+                    "survey.json: observation_tables must be an array"
+                )
+            else:
+                by_name: dict[str, dict[str, Any]] = {}
+                for table in tables:
+                    if not isinstance(table, dict):
+                        continue
+                    specification = table.get("observation_specification")
+                    if (
+                        isinstance(specification, dict)
+                        and isinstance(specification.get("name"), str)
+                    ):
+                        by_name[specification["name"]] = table
+
+                for schema_name, fields in working.items():
+                    if (
+                        not isinstance(schema_name, str)
+                        or not isinstance(fields, dict)
+                    ):
+                        errors.append(
+                            "survey.json: each working_representation entry "
+                            "must map a specification name to an object"
+                        )
+                        continue
+
+                    if schema_name not in by_name:
+                        errors.append(
+                            "survey.json: working_representation references "
+                            f"unknown observation specification {schema_name!r}"
+                        )
+                        continue
+
+                    schema_path = (
+                        schemas_dir / f"{schema_name}.schema.json"
+                    )
+                    try:
+                        schema = load_schema(schema_path)
+                    except ValueError as exc:
+                        errors.append(str(exc))
+                        continue
+
+                    for field_name, source_unit in fields.items():
+                        if (
+                            not isinstance(field_name, str)
+                            or not isinstance(source_unit, str)
+                            or not source_unit
+                        ):
+                            errors.append(
+                                "survey.json: invalid working unit declaration "
+                                f"for {schema_name!r}"
+                            )
+                            continue
+
+                        field_schema = property_schema_for_column(
+                            schema, field_name
+                        )
+                        if not field_schema:
+                            errors.append(
+                                "survey.json: working_representation field "
+                                f"{schema_name}.{field_name} is not defined "
+                                "by the observation schema"
+                            )
+                            continue
+
+                        canonical_unit = field_schema.get("x-kepler-unit")
+                        dimension = field_schema.get("x-kepler-dimension")
+
+                        if not isinstance(canonical_unit, str):
+                            errors.append(
+                                "survey.json: working_representation field "
+                                f"{schema_name}.{field_name} has no canonical "
+                                "unit in the observation schema"
+                            )
+                            continue
+
+                        if not isinstance(dimension, str):
+                            errors.append(
+                                "survey.json: working_representation field "
+                                f"{schema_name}.{field_name} is not declared "
+                                "as a physical quantity"
+                            )
+                            continue
+
+                        if source_unit != canonical_unit:
+                            reasons.append(
+                                f"{schema_name}.{field_name} uses "
+                                f"{source_unit} instead of canonical "
+                                f"{canonical_unit}"
+                            )
 
     return not reasons and not errors, reasons, errors
 
