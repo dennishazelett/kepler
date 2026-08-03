@@ -228,15 +228,23 @@ Schemas are authoritative.
 11. Produce a survey that conforms to the attached Survey Specification
     and applicable Observation Specification.
 
-For compass observation tables recorded relative to magnetic north,
-include table-level `measurement_reference` metadata in `survey.json`,
-including:
+For compass observation tables, include table-level
+`measurement_reference` metadata.
 
-- `azimuth_reference`
+When `azimuth_reference` is `magnetic_north`, include:
+
 - `magnetic_declination_deg`
 - `declination_sign_convention`
 - optional `evaluated_at`
 - optional `source`
+
+When `azimuth_reference` is `true_north`, set:
+
+- `magnetic_declination_deg` to `null`
+- `declination_sign_convention` to `null`
+
+Do not infer or invent the azimuth reference. Preserve the contributor's
+documented reference system.
 
 Omit `measurement_reference` for observation tables that do not require
 additional measurement-context metadata.

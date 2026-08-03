@@ -1,6 +1,11 @@
 # Kepler
 
-**Learning science by doing science.**
+## Languages
+
+- 🇺🇸 English (this document)
+- 🇪🇸 [Español](README.es.md)
+
+# **Learning science by doing science.**
 
 Kepler is an open educational and research project that uses naked-eye astronomy to teach scientific measurement and the computational sciences—from statistical inference to modern machine learning and artificial intelligence—through reproducible observational research.
 
