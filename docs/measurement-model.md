@@ -147,6 +147,8 @@ For example:
 
 - an angular separation constrains the relative positions of two objects.
 
+![**Figure 1:** Kepler instruments measure observable local phenomena such as altitude and azimuth.](images/great-circles.svg){width="4in"}
+
 No single observation completely determines the latent state.
 
 Scientific understanding emerges by combining many independent constraints collected at different times, from different locations, using different instruments, and by different observers.

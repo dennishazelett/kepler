@@ -12,13 +12,13 @@ Kepler considera las observaciones individuales no como mediciones directas del 
 
 Este documento define el modelo conceptual de medición que sustenta todos los componentes del proyecto. El diseño de instrumentos, los protocolos de observación, los esquemas de datos, la simulación, la inferencia estadística, el aprendizaje automático y los materiales educativos deben mantenerse coherentes con este modelo.
 
----
+------------------------------------------------------------------------
 
 # El Proceso de Medición
 
 El proyecto considera cada observación como una realización del siguiente proceso causal:
 
-```text
+``` text
 Sistema Solar
       ↓
 Cielo observable
@@ -42,7 +42,7 @@ Cada etapa introduce información y, al mismo tiempo, puede introducir incertidu
 
 El propósito del proyecto no es eliminar estas imperfecciones, sino caracterizarlas y razonar rigurosamente sobre ellas.
 
----
+------------------------------------------------------------------------
 
 # Etapa 1 — Sistema Solar
 
@@ -50,16 +50,16 @@ El estado físico del Sistema Solar existe independientemente del observador.
 
 Algunos ejemplos incluyen:
 
-* posiciones planetarias;
-* velocidades planetarias;
-* rotación de la Tierra;
-* posición orbital de la Tierra;
-* posición de la Luna;
-* marco de referencia estelar.
+- posiciones planetarias;
+- velocidades planetarias;
+- rotación de la Tierra;
+- posición orbital de la Tierra;
+- posición de la Luna;
+- marco de referencia estelar.
 
 En conjunto, estas cantidades definen el **estado latente** del mundo físico. Los participantes nunca observan ese estado de manera directa.
 
----
+------------------------------------------------------------------------
 
 # Etapa 2 — Cielo observable
 
@@ -67,16 +67,16 @@ El estado físico produce un cielo aparente visto desde una ubicación y un mome
 
 Esta etapa incluye efectos como:
 
-* latitud y longitud del observador;
-* fecha y hora;
-* rotación de la Tierra;
-* refracción atmosférica;
-* obstrucciones del horizonte;
-* condiciones de visibilidad.
+- latitud y longitud del observador;
+- fecha y hora;
+- rotación de la Tierra;
+- refracción atmosférica;
+- obstrucciones del horizonte;
+- condiciones de visibilidad.
 
 El cielo observable constituye la interfaz entre la mecánica celeste y la medición.
 
----
+------------------------------------------------------------------------
 
 # Etapa 3 — Instrumento
 
@@ -84,20 +84,20 @@ El instrumento transforma el cielo observable en cantidades medibles.
 
 Inicialmente, el proyecto se centra en instrumentos sencillos construidos por los propios participantes, tales como:
 
-* ballestillas (*cross-staffs*);
-* cuadrantes.
+- ballestillas (*cross-staffs*);
+- cuadrantes.
 
 Cada instrumento posee propiedades medibles, entre ellas:
 
-* revisión del diseño;
-* materiales de construcción;
-* dimensiones;
-* historial de calibración;
-* precisión estimada.
+- revisión del diseño;
+- materiales de construcción;
+- dimensiones;
+- historial de calibración;
+- precisión estimada.
 
 El instrumento se considera parte integral del proceso de medición y no simplemente una herramienta pasiva.
 
----
+------------------------------------------------------------------------
 
 # Etapa 4 — Observador
 
@@ -105,17 +105,17 @@ Los observadores utilizan instrumentos para producir mediciones.
 
 Cada observador aporta sus propias características, entre ellas:
 
-* experiencia;
-* habilidad de calibración;
-* consistencia;
-* precisión en el registro de datos;
-* toma de decisiones.
+- experiencia;
+- habilidad de calibración;
+- consistencia;
+- precisión en el registro de datos;
+- toma de decisiones.
 
 Es de esperar que distintos observadores produzcan mediciones sistemáticamente diferentes bajo condiciones idénticas.
 
 Esta variabilidad constituye una característica del proyecto, y no un defecto.
 
----
+------------------------------------------------------------------------
 
 # Etapa 5 — Medición
 
@@ -125,15 +125,15 @@ Cada medición registra una propiedad del cielo observable bajo un conjunto part
 
 Algunos ejemplos incluyen:
 
-* separaciones angulares;
+- separaciones angulares;
 
-* altitudes;
+- altitudes;
 
-* acimuts;
+- acimuts;
 
-* marcas temporales;
+- marcas temporales;
 
-* mediciones de calibración.
+- mediciones de calibración.
 
 Aunque con frecuencia estas mediciones se tratan como si determinaran directamente las coordenadas celestes, Kepler adopta una perspectiva diferente.
 
@@ -141,11 +141,13 @@ Aunque con frecuencia estas mediciones se tratan como si determinaran directamen
 
 Por ejemplo:
 
-* una medición de altitud restringe la posible ubicación de un objeto sobre la esfera celeste;
+- una medición de altitud restringe la posible ubicación de un objeto sobre la esfera celeste;
 
-* una medición de acimut aporta una restricción direccional independiente;
+- una medición de acimut aporta una restricción direccional independiente;
 
-* una separación angular restringe las posiciones relativas de dos objetos.
+- una separación angular restringe las posiciones relativas de dos objetos.
+
+![**Figura 1:** Los instrumentos de Kepler miden fenómenos observables locales, como la altura y el acimut.](images/great-circles.svg){width="4in"}
 
 Ninguna observación individual determina completamente el estado latente.
 
@@ -157,7 +159,7 @@ Las mediciones constituyen registros inmutables.
 
 Las correcciones, calibraciones o evaluaciones de calidad deben almacenarse por separado y nunca sustituir las observaciones originales.
 
----
+------------------------------------------------------------------------
 
 # Etapa 6 — Conjunto de datos
 
@@ -165,17 +167,17 @@ Las mediciones individuales solo adquieren verdadero valor científico cuando se
 
 El conjunto de datos del proyecto incluye:
 
-* observaciones;
-* observadores;
-* instrumentos;
-* sitios;
-* registros de calibración;
-* ediciones del curso;
-* información ambiental.
+- observaciones;
+- observadores;
+- instrumentos;
+- sitios;
+- registros de calibración;
+- ediciones del curso;
+- información ambiental.
 
 Por lo tanto, el conjunto de datos representa tanto las observaciones astronómicas como el proceso completo de medición que las produjo.
 
----
+------------------------------------------------------------------------
 
 # Etapa 7 — Inferencia
 
@@ -185,21 +187,21 @@ El proyecto apoya intencionalmente múltiples enfoques de inferencia.
 
 Algunos ejemplos incluyen:
 
-* estadística descriptiva;
-* modelos de regresión;
-* modelos bayesianos jerárquicos;
-* modelos de espacio de estados;
-* procesos gaussianos;
-* aprendizaje supervisado;
-* aprendizaje no supervisado;
-* detección de anomalías;
-* aprendizaje profundo.
+- estadística descriptiva;
+- modelos de regresión;
+- modelos bayesianos jerárquicos;
+- modelos de espacio de estados;
+- procesos gaussianos;
+- aprendizaje supervisado;
+- aprendizaje no supervisado;
+- detección de anomalías;
+- aprendizaje profundo.
 
 Ningún método de inferencia se considera privilegiado dentro de la arquitectura del proyecto.
 
 Los métodos de inferencia deben entenderse como explicaciones alternativas que compiten por explicar las mismas observaciones.
 
----
+------------------------------------------------------------------------
 
 # Etapa 8 — Comprensión científica
 
@@ -207,15 +209,15 @@ La comprensión científica surge al comparar los modelos con las observaciones.
 
 Los participantes deben experimentar la ciencia como un proceso iterativo de:
 
-1. proponer explicaciones;
-2. recopilar evidencia;
-3. perfeccionar modelos;
-4. evaluar la incertidumbre;
-5. mejorar las predicciones.
+1.  proponer explicaciones;
+2.  recopilar evidencia;
+3.  perfeccionar modelos;
+4.  evaluar la incertidumbre;
+5.  mejorar las predicciones.
 
 Por ello, el proyecto pone mayor énfasis en el razonamiento científico que en la obtención de respuestas correctas.
 
----
+------------------------------------------------------------------------
 
 # Etapa 9 — Comunicación científica
 
@@ -227,7 +229,7 @@ La comunicación permite que las investigaciones sean examinadas, reproducidas, 
 
 Por ello, los argumentos científicos pasan a formar parte del proceso de medición y no constituyen simplemente un informe final.
 
----
+------------------------------------------------------------------------
 
 # Simulación
 
@@ -239,15 +241,15 @@ Esto permite evaluar métodos de inferencia bajo condiciones controladas en las 
 
 La simulación respalda:
 
-* desarrollo de software;
-* validación de modelos;
-* ejercicios educativos;
-* estudios comparativos (*benchmarks*);
-* estudios de recuperación de modelos.
+- desarrollo de software;
+- validación de modelos;
+- ejercicios educativos;
+- estudios comparativos (*benchmarks*);
+- estudios de recuperación de modelos.
 
 La arquitectura de simulación debe reflejar el proceso real de medición con la mayor fidelidad posible.
 
----
+------------------------------------------------------------------------
 
 # Principios de Diseño
 
@@ -283,7 +285,7 @@ Las decisiones arquitectónicas deben evitar privilegiar una única implementaci
 
 El proyecto debe comenzar con instrumentos sencillos, observaciones simples y enfoques inferenciales básicos antes de introducir una mayor complejidad.
 
----
+------------------------------------------------------------------------
 
 # Alcance
 
@@ -291,13 +293,13 @@ El proyecto Kepler no pretende reproducir la astrometría profesional ni competi
 
 Su propósito es crear un entorno de medición rico y auténtico en el que los participantes puedan aprender:
 
-* ciencia observacional;
-* teoría de la medición;
-* cuantificación de la incertidumbre;
-* inferencia estadística;
-* aprendizaje automático;
-* investigación reproducible;
-* práctica científica colaborativa.
+- ciencia observacional;
+- teoría de la medición;
+- cuantificación de la incertidumbre;
+- inferencia estadística;
+- aprendizaje automático;
+- investigación reproducible;
+- práctica científica colaborativa.
 
 La astronomía proporciona el contexto.
 
