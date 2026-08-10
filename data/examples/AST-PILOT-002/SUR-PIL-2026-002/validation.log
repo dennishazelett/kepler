@@ -2,17 +2,13 @@ Kepler Survey Validation Report
 ===============================
 Validator version: 0.4.0
 Survey directory: /Users/hazelettd/Library/CloudStorage/OneDrive-Cedars-SinaiHealthSystem/CEDARS-SINAI/REPO/kepler/data/examples/AST-PILOT-002/SUR-PIL-2026-002
-Validated at: 2026-08-02T02:16:06.891500+00:00
-Status: PASS
-Archive status: VALID PRELIMINARY ARCHIVE
+Validated at: 2026-08-09T23:39:25.681263+00:00
+Status: FAIL
+Archive status: INVALID ARCHIVE
 Submission ready: NO
 
-No validation errors were found.
+Errors
+------
+- checksums.sha256: checksum mismatch for observations/quadrant-observation.csv
 
-Canonicalization required
--------------------------
-- observing_location.elevation uses ft instead of canonical m
-- cross-staff-observation.fiducial_width uses in instead of canonical mm
-- cross-staff-observation.staff_reading uses in instead of canonical mm
-
-Error count: 0
+Error count: 1
