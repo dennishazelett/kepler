@@ -1,0 +1,22 @@
+name = "Kepler"
+uuid = "ddc5d2b1-b9c7-47a1-84a1-4126203ea679"
+authors = ["Dennis Hazelett"]
+version = "0.1.0"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[compat]
+CSV = "0.10.16"
+DataFrames = "1.8.2"
+JSON3 = "1.14.3"
+SHA = "0.7.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
