@@ -11,6 +11,7 @@ include("kepler/ingest/compatibility.jl")
 include("kepler/analysis/collection.jl")
 include("kepler/analysis/materialize_context.jl")
 include("kepler/analysis/compass.jl")
+include("kepler/analysis/cross-staff.jl")
 
 export AnalysisCollection
 export ObservationSpecificationKey
@@ -21,5 +22,7 @@ export table_metadata
 export lineage
 export materialize_context
 export derive_compass_true_azimuth
+export derive_cross_staff_nominal_separation
+
 
 end
