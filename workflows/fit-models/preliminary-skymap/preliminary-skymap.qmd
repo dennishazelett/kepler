@@ -1,0 +1,802 @@
+---
+title: "Preliminary Skymap from Atomic Observations"
+author: "Kepler"
+subtitle: "Three-instrument nonlinear least-squares workflow"
+engine: julia
+format:
+  html:
+    toc: true
+    code-fold: false
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# 1. Purpose
+
+This workflow assembles one or more validated canonical Kepler surveys and
+estimates preliminary celestial coordinates from three atomic constraint types:
+
+1. quadrant nominal altitude;
+2. compass true azimuth; and
+3. cross-staff nominal geometric separation.
+
+The fit is an unweighted nonlinear least-squares baseline. It does not apply
+an instrument calibration model, atmospheric-refraction correction, uncertainty
+weights, observer-bias parameters, or a probabilistic uncertainty model.
+
+# 2. Julia Environment
+
+```{julia}
+import Pkg
+
+repository_root = normpath(joinpath(@__DIR__, "..", "..", ".."))
+Pkg.activate(repository_root)
+
+using CairoMakie
+using DataFrames
+using Dates
+using JSON3
+using Optim
+using Statistics
+using Kepler
+
+nothing
+```
+
+# 3. Configuration
+
+Edit `survey_paths` to name the canonical survey archives to include. Multiple
+surveys may be supplied. Observation tables are combined only when their
+observation specification name and version are exactly compatible.
+
+```{julia}
+survey_paths = [
+    joinpath(
+        repository_root,
+        "data",
+        "examples",
+        "AST-PILOT-002",
+        "SUR-PIL-2026-002-canonical",
+    ),
+]
+
+quadrant_specification = (
+    name = "quadrant-observation",
+    version = "UNSPECIFIED",
+)
+
+compass_specification = (
+    name = "compass-observation",
+    version = "UNSPECIFIED",
+)
+
+crossstaff_specification = (
+    name = "cross-staff-observation",
+    version = "0.3",
+)
+
+for survey_path in survey_paths
+    isdir(survey_path) || error(
+        "Canonical survey directory not found: $survey_path",
+    )
+end
+
+nothing
+```
+
+# 4. Assemble Canonical Data
+
+```{julia}
+collection = assemble_analysis_data(
+    survey_paths;
+    specifications = [
+        quadrant_specification.name,
+        compass_specification.name,
+        crossstaff_specification.name,
+    ],
+)
+
+survey_metadata(collection)
+```
+
+```{julia}
+table_metadata(collection)
+```
+
+## 4.1 Resolve Exact Specification Keys
+
+The public transformation functions operate on exact observation-specification
+keys. This helper resolves a name/version pair from the assembled collection and
+fails clearly if the requested version is absent or ambiguous.
+
+```{julia}
+function assembled_specification_key(
+    collection::AnalysisCollection,
+    name::AbstractString,
+    version::AbstractString,
+)
+    matches = [
+        key for key in keys(collection.observations)
+        if key.name == name && key.version == version
+    ]
+
+    length(matches) == 1 || error(
+        "Expected exactly one assembled specification for " *
+        "$name@$version; found $(length(matches)).",
+    )
+
+    only(matches)
+end
+
+quadrant_key = assembled_specification_key(
+    collection,
+    quadrant_specification.name,
+    quadrant_specification.version,
+)
+
+compass_key = assembled_specification_key(
+    collection,
+    compass_specification.name,
+    compass_specification.version,
+)
+
+crossstaff_key = assembled_specification_key(
+    collection,
+    crossstaff_specification.name,
+    crossstaff_specification.version,
+)
+
+nothing
+```
+
+# 5. Derive Fit-Ready Observations
+
+The raw canonical observations remain unchanged. Each transform returns a new
+analysis frame with an explicit `analysis_transform` label.
+
+```{julia}
+quadrant = derive_quadrant_nominal_altitude(
+    collection,
+    quadrant_key,
+)
+
+compass = derive_compass_true_azimuth(
+    collection,
+    compass_key,
+)
+
+crossstaff = derive_cross_staff_nominal_separation(
+    collection,
+    crossstaff_key,
+)
+
+nothing
+```
+
+## 5.1 Add Survey Location Context
+
+Each horizontal observation is evaluated at the observing location associated
+with its source table. This preserves the possibility of fitting multiple
+surveys collected at different sites.
+
+```{julia}
+function add_site_context(
+    frame::DataFrame,
+    collection::AnalysisCollection,
+    key::ObservationSpecificationKey,
+)
+    context = materialize_context(
+        collection,
+        key;
+        include = (:survey, :source_table),
+    )
+
+    source_context = unique(
+        select(
+            context,
+            :source_table_id,
+            :source_table__survey_id,
+            :survey__observing_location_json,
+        ),
+    )
+
+    enriched = leftjoin(
+        frame,
+        source_context;
+        on = :source_table_id,
+    )
+
+    site_latitude_deg = Float64[]
+    site_longitude_deg = Float64[]
+
+    for row in eachrow(enriched)
+        location = JSON3.read(String(row.survey__observing_location_json))
+
+        push!(site_latitude_deg, Float64(location.latitude_deg))
+        push!(site_longitude_deg, Float64(location.longitude_deg))
+    end
+
+    enriched[!, :site_latitude_deg] = site_latitude_deg
+    enriched[!, :site_longitude_deg] = site_longitude_deg
+
+    enriched
+end
+
+quadrant = add_site_context(quadrant, collection, quadrant_key)
+compass = add_site_context(compass, collection, compass_key)
+crossstaff = add_site_context(crossstaff, collection, crossstaff_key)
+
+nothing
+```
+
+## 5.2 Normalize Analysis Fields
+
+```{julia}
+parse_utc_timestamp(value) =
+    DateTime(replace(String(value), "Z" => ""))
+
+quadrant[!, :target_name] = String.(quadrant.target_id)
+quadrant[!, :observed_at_utc] =
+    parse_utc_timestamp.(quadrant.observed_at)
+
+compass[!, :target_name] = String.(compass.target_name)
+compass[!, :observed_at_utc] =
+    parse_utc_timestamp.(compass.observed_at)
+
+crossstaff[!, :primary_target_id] = String.(
+    crossstaff[!, Symbol("field_observation.primary_target_id")],
+)
+
+crossstaff[!, :secondary_target_id] = String.(
+    crossstaff[!, Symbol("field_observation.secondary_target_id")],
+)
+
+crossstaff[!, :observed_at_utc] =
+    parse_utc_timestamp.(crossstaff.observed_at)
+
+observation_inventory = DataFrame(
+    observation_type = ["Quadrant", "Compass", "Cross-staff"],
+    transform = [
+        only(unique(quadrant.analysis_transform)),
+        only(unique(compass.analysis_transform)),
+        only(unique(crossstaff.analysis_transform)),
+    ],
+    observations = [nrow(quadrant), nrow(compass), nrow(crossstaff)],
+)
+
+observation_inventory
+```
+
+# 6. Coordinate Kernel
+
+The model estimates topocentric equatorial coordinates of date. UTC is used as
+a practical approximation to UT1, and atmospheric refraction is not corrected.
+
+```{julia}
+normalize_degrees(angle_deg) = mod(angle_deg, 360.0)
+
+function circular_difference_degrees(first_deg, second_deg)
+    mod(first_deg - second_deg + 180.0, 360.0) - 180.0
+end
+
+const JULIAN_DATE_UNIX_EPOCH = 2440587.5
+const MILLISECONDS_PER_DAY = 86_400_000.0
+
+function julian_date_utc(timestamp::DateTime)
+    milliseconds_since_unix_epoch = Dates.value(
+        timestamp - DateTime(1970, 1, 1),
+    )
+
+    JULIAN_DATE_UNIX_EPOCH +
+    milliseconds_since_unix_epoch / MILLISECONDS_PER_DAY
+end
+
+function greenwich_mean_sidereal_time_deg(timestamp::DateTime)
+    julian_date = julian_date_utc(timestamp)
+    centuries_since_j2000 = (julian_date - 2451545.0) / 36525.0
+
+    normalize_degrees(
+        280.46061837 +
+        360.98564736629 * (julian_date - 2451545.0) +
+        0.000387933 * centuries_since_j2000^2 -
+        centuries_since_j2000^3 / 38710000.0,
+    )
+end
+
+function local_mean_sidereal_time_deg(
+    timestamp::DateTime,
+    longitude_deg,
+)
+    normalize_degrees(
+        greenwich_mean_sidereal_time_deg(timestamp) + longitude_deg,
+    )
+end
+
+function horizontal_to_equatorial(
+    altitude_deg,
+    azimuth_deg,
+    latitude_deg,
+    longitude_deg,
+    timestamp::DateTime,
+)
+    altitude_rad = deg2rad(altitude_deg)
+    azimuth_rad = deg2rad(azimuth_deg)
+    latitude_rad = deg2rad(latitude_deg)
+
+    sin_declination = clamp(
+        sin(latitude_rad) * sin(altitude_rad) +
+        cos(latitude_rad) * cos(altitude_rad) * cos(azimuth_rad),
+        -1.0,
+        1.0,
+    )
+
+    declination_rad = asin(sin_declination)
+
+    hour_angle_rad = atan(
+        -sin(azimuth_rad) * cos(altitude_rad),
+        sin(altitude_rad) * cos(latitude_rad) -
+        cos(altitude_rad) * sin(latitude_rad) * cos(azimuth_rad),
+    )
+
+    hour_angle_deg = normalize_degrees(rad2deg(hour_angle_rad))
+    sidereal_time_deg = local_mean_sidereal_time_deg(timestamp, longitude_deg)
+
+    (
+        right_ascension_deg = normalize_degrees(
+            sidereal_time_deg - hour_angle_deg,
+        ),
+        declination_deg = rad2deg(declination_rad),
+    )
+end
+
+function equatorial_to_horizontal(
+    right_ascension_deg,
+    declination_deg,
+    latitude_deg,
+    longitude_deg,
+    timestamp::DateTime,
+)
+    latitude_rad = deg2rad(latitude_deg)
+    declination_rad = deg2rad(declination_deg)
+
+    hour_angle_deg = circular_difference_degrees(
+        local_mean_sidereal_time_deg(timestamp, longitude_deg),
+        right_ascension_deg,
+    )
+    hour_angle_rad = deg2rad(hour_angle_deg)
+
+    altitude_rad = asin(clamp(
+        sin(latitude_rad) * sin(declination_rad) +
+        cos(latitude_rad) * cos(declination_rad) * cos(hour_angle_rad),
+        -1.0,
+        1.0,
+    ))
+
+    azimuth_rad = atan(
+        -sin(hour_angle_rad) * cos(declination_rad),
+        sin(declination_rad) * cos(latitude_rad) -
+        cos(declination_rad) * sin(latitude_rad) * cos(hour_angle_rad),
+    )
+
+    (
+        altitude_deg = rad2deg(altitude_rad),
+        azimuth_deg = normalize_degrees(rad2deg(azimuth_rad)),
+    )
+end
+
+function angular_separation_deg(
+    first_right_ascension_deg,
+    first_declination_deg,
+    second_right_ascension_deg,
+    second_declination_deg,
+)
+    first_right_ascension_rad = deg2rad(first_right_ascension_deg)
+    first_declination_rad = deg2rad(first_declination_deg)
+    second_right_ascension_rad = deg2rad(second_right_ascension_deg)
+    second_declination_rad = deg2rad(second_declination_deg)
+
+    cosine = clamp(
+        sin(first_declination_rad) * sin(second_declination_rad) +
+        cos(first_declination_rad) * cos(second_declination_rad) *
+        cos(first_right_ascension_rad - second_right_ascension_rad),
+        -1.0,
+        1.0,
+    )
+
+    rad2deg(acos(cosine))
+end
+
+nothing
+```
+
+# 7. Initial Coordinates
+
+Closest-time quadrant/compass pairs provide only the starting point for the
+optimizer. The joint fit below evaluates every quadrant and compass observation
+at its own timestamp.
+
+```{julia}
+altitude_observations = select(
+    quadrant,
+    :observation_id => :quadrant_observation_id,
+    :source_table__survey_id => :survey_id,
+    :observer_id,
+    :target_name,
+    :nominal_altitude_deg,
+    :observed_at_utc => :quadrant_observed_at_utc,
+    :site_latitude_deg,
+    :site_longitude_deg,
+)
+
+azimuth_observations = select(
+    compass,
+    :observation_id => :compass_observation_id,
+    :source_table__survey_id => :survey_id,
+    :observer_id,
+    :target_name,
+    :true_azimuth_deg,
+    :observed_at_utc => :compass_observed_at_utc,
+)
+
+pair_candidates = innerjoin(
+    altitude_observations,
+    azimuth_observations;
+    on = [:survey_id, :observer_id, :target_name],
+)
+
+pair_candidates[!, :time_difference_seconds] = [
+    abs(Dates.value(
+        row.quadrant_observed_at_utc - row.compass_observed_at_utc,
+    )) / 1000
+    for row in eachrow(pair_candidates)
+]
+
+paired_horizontal_observations = combine(
+    groupby(pair_candidates, :quadrant_observation_id),
+) do group
+    first(sort(group, :time_difference_seconds), 1)
+end
+
+nrow(paired_horizontal_observations) > 0 || error(
+    "No compatible quadrant/compass pairs are available for initialization.",
+)
+
+function timestamp_midpoint(
+    first_timestamp::DateTime,
+    second_timestamp::DateTime,
+)
+    offset_milliseconds = Dates.value(second_timestamp - first_timestamp)
+    first_timestamp + Millisecond(round(Int, offset_milliseconds / 2))
+end
+
+paired_horizontal_observations[!, :reference_time_utc] = [
+    timestamp_midpoint(
+        row.quadrant_observed_at_utc,
+        row.compass_observed_at_utc,
+    )
+    for row in eachrow(paired_horizontal_observations)
+]
+
+initial_estimates = [
+    horizontal_to_equatorial(
+        row.nominal_altitude_deg,
+        row.true_azimuth_deg,
+        row.site_latitude_deg,
+        row.site_longitude_deg,
+        row.reference_time_utc,
+    )
+    for row in eachrow(paired_horizontal_observations)
+]
+
+paired_horizontal_observations[!, :right_ascension_deg] = [
+    estimate.right_ascension_deg for estimate in initial_estimates
+]
+paired_horizontal_observations[!, :declination_deg] = [
+    estimate.declination_deg for estimate in initial_estimates
+]
+
+function circular_mean_degrees(values)
+    angles_rad = deg2rad.(values)
+    normalize_degrees(rad2deg(atan(mean(sin.(angles_rad)), mean(cos.(angles_rad)))) )
+end
+
+initial_target_coordinates = combine(
+    groupby(paired_horizontal_observations, :target_name),
+    :right_ascension_deg => circular_mean_degrees => :right_ascension_deg,
+    :declination_deg => mean => :declination_deg,
+    nrow => :initial_pair_count,
+)
+
+sort!(initial_target_coordinates, :target_name)
+initial_target_coordinates
+```
+
+# 8. Joint Nonlinear Least-Squares Fit
+
+Targets without at least one initial quadrant/compass coordinate estimate are
+not fitted in this first baseline. Cross-staff rows involving an excluded target
+are reported but do not enter the objective.
+
+```{julia}
+fitted_targets = String.(initial_target_coordinates.target_name)
+target_index = Dict(target => index for (index, target) in enumerate(fitted_targets))
+number_of_targets = length(fitted_targets)
+
+function target_coordinates_from_parameters(parameters, target::String)
+    index = target_index[target]
+
+    (
+        right_ascension_deg = parameters[index],
+        declination_deg = parameters[number_of_targets + index],
+    )
+end
+
+initial_parameters = zeros(2 * number_of_targets)
+
+for row in eachrow(initial_target_coordinates)
+    index = target_index[String(row.target_name)]
+    initial_parameters[index] = row.right_ascension_deg
+    initial_parameters[number_of_targets + index] = row.declination_deg
+end
+
+lower_bounds = vcat(fill(0.0, number_of_targets), fill(-90.0, number_of_targets))
+upper_bounds = vcat(fill(360.0, number_of_targets), fill(90.0, number_of_targets))
+
+function residuals_by_observation_type(parameters)
+    quadrant_residuals = Float64[]
+    compass_residuals = Float64[]
+    crossstaff_residuals = Float64[]
+
+    for row in eachrow(quadrant)
+        target = String(row.target_name)
+        haskey(target_index, target) || continue
+
+        coordinates = target_coordinates_from_parameters(parameters, target)
+        predicted = equatorial_to_horizontal(
+            coordinates.right_ascension_deg,
+            coordinates.declination_deg,
+            row.site_latitude_deg,
+            row.site_longitude_deg,
+            row.observed_at_utc,
+        )
+
+        push!(
+            quadrant_residuals,
+            row.nominal_altitude_deg - predicted.altitude_deg,
+        )
+    end
+
+    for row in eachrow(compass)
+        target = String(row.target_name)
+        haskey(target_index, target) || continue
+
+        coordinates = target_coordinates_from_parameters(parameters, target)
+        predicted = equatorial_to_horizontal(
+            coordinates.right_ascension_deg,
+            coordinates.declination_deg,
+            row.site_latitude_deg,
+            row.site_longitude_deg,
+            row.observed_at_utc,
+        )
+
+        push!(
+            compass_residuals,
+            circular_difference_degrees(
+                row.true_azimuth_deg,
+                predicted.azimuth_deg,
+            ),
+        )
+    end
+
+    for row in eachrow(crossstaff)
+        first_target = String(row.primary_target_id)
+        second_target = String(row.secondary_target_id)
+
+        haskey(target_index, first_target) || continue
+        haskey(target_index, second_target) || continue
+
+        first_coordinates = target_coordinates_from_parameters(
+            parameters,
+            first_target,
+        )
+        second_coordinates = target_coordinates_from_parameters(
+            parameters,
+            second_target,
+        )
+
+        predicted_separation = angular_separation_deg(
+            first_coordinates.right_ascension_deg,
+            first_coordinates.declination_deg,
+            second_coordinates.right_ascension_deg,
+            second_coordinates.declination_deg,
+        )
+
+        push!(
+            crossstaff_residuals,
+            row.nominal_geometric_separation_deg - predicted_separation,
+        )
+    end
+
+    (
+        quadrant = quadrant_residuals,
+        compass = compass_residuals,
+        crossstaff = crossstaff_residuals,
+    )
+end
+
+function joint_sum_of_squares(parameters)
+    residuals = residuals_by_observation_type(parameters)
+    sum(abs2, residuals.quadrant) +
+    sum(abs2, residuals.compass) +
+    sum(abs2, residuals.crossstaff)
+end
+
+initial_sum_of_squares = joint_sum_of_squares(initial_parameters)
+
+optimization_result = optimize(
+    joint_sum_of_squares,
+    lower_bounds,
+    upper_bounds,
+    initial_parameters,
+    Fminbox(LBFGS()),
+)
+
+Optim.converged(optimization_result) || error(
+    "Joint nonlinear least-squares optimization did not converge.",
+)
+
+fitted_parameters = Optim.minimizer(optimization_result)
+fitted_sum_of_squares = Optim.minimum(optimization_result)
+
+fit_summary = (
+    converged = Optim.converged(optimization_result),
+    iterations = Optim.iterations(optimization_result),
+    initial_sum_of_squares = initial_sum_of_squares,
+    fitted_sum_of_squares = fitted_sum_of_squares,
+)
+
+fit_summary
+```
+
+# 9. Results and Diagnostics
+
+```{julia}
+joint_target_coordinates = DataFrame(
+    target_name = String[],
+    right_ascension_deg = Float64[],
+    right_ascension_hours = Float64[],
+    declination_deg = Float64[],
+)
+
+for target in fitted_targets
+    coordinates = target_coordinates_from_parameters(fitted_parameters, target)
+
+    push!(joint_target_coordinates, (
+        target,
+        coordinates.right_ascension_deg,
+        coordinates.right_ascension_deg / 15.0,
+        coordinates.declination_deg,
+    ))
+end
+
+sort!(joint_target_coordinates, :target_name)
+joint_target_coordinates
+```
+
+```{julia}
+final_residuals = residuals_by_observation_type(fitted_parameters)
+
+function residual_summary(values, observation_type::String)
+    DataFrame(
+        observation_type = [observation_type],
+        constraints = [length(values)],
+        mean_residual_deg = [mean(values)],
+        mean_absolute_residual_deg = [mean(abs.(values))],
+        rmse_deg = [sqrt(mean(values .^ 2))],
+        maximum_absolute_residual_deg = [maximum(abs.(values))],
+    )
+end
+
+residual_diagnostics = vcat(
+    residual_summary(final_residuals.quadrant, "Quadrant"),
+    residual_summary(final_residuals.compass, "Compass"),
+    residual_summary(final_residuals.crossstaff, "Cross-staff"),
+)
+
+residual_diagnostics
+```
+
+# 10. Preliminary North-Polar Skymap
+
+This map displays the **joint fitted** coordinates, not the pre-fit independent
+initial estimates.
+
+```{julia}
+polar_sky_map = copy(joint_target_coordinates)
+polar_sky_map[!, :polar_radius_deg] = 90.0 .- polar_sky_map.declination_deg
+polar_sky_map[!, :polar_angle_rad] = deg2rad.(polar_sky_map.right_ascension_deg)
+polar_sky_map[!, :polar_x] = polar_sky_map.polar_radius_deg .* sin.(polar_sky_map.polar_angle_rad)
+polar_sky_map[!, :polar_y] = polar_sky_map.polar_radius_deg .* cos.(polar_sky_map.polar_angle_rad)
+
+maximum_radius_deg = ceil(maximum(polar_sky_map.polar_radius_deg) / 5.0) * 5.0
+circle_angle = range(0, 2pi; length = 361)
+
+fig = Figure(size = (800, 800))
+ax = Axis(
+    fig[1, 1],
+    title = "Preliminary Joint Nonlinear Least-Squares Skymap",
+    xlabel = "Angular distance from north celestial pole (degrees)",
+    ylabel = "Angular distance from north celestial pole (degrees)",
+    aspect = DataAspect(),
+)
+
+for radius_deg in 5.0:5.0:maximum_radius_deg
+    lines!(
+        ax,
+        radius_deg .* sin.(circle_angle),
+        radius_deg .* cos.(circle_angle),
+        color = :gray75,
+        linewidth = 1,
+    )
+end
+
+for right_ascension_hour in 0:2:22
+    angle_rad = deg2rad(15.0 * right_ascension_hour)
+
+    lines!(
+        ax,
+        [0.0, maximum_radius_deg * sin(angle_rad)],
+        [0.0, maximum_radius_deg * cos(angle_rad)],
+        color = :gray75,
+        linewidth = 1,
+    )
+end
+
+scatter!(ax, polar_sky_map.polar_x, polar_sky_map.polar_y; markersize = 12)
+
+for row in eachrow(polar_sky_map)
+    text!(
+        ax,
+        row.polar_x,
+        row.polar_y;
+        text = row.target_name,
+        offset = (0, 6),
+        align = (:center, :bottom),
+    )
+end
+
+scatter!(ax, [0.0], [0.0]; marker = :star5, markersize = 18)
+text!(ax, 0.0, 0.0; text = "NCP", offset = (8, 6), align = (:left, :bottom))
+
+limits!(
+    ax,
+    -1.15 * maximum_radius_deg,
+    1.15 * maximum_radius_deg,
+    -1.15 * maximum_radius_deg,
+    1.15 * maximum_radius_deg,
+)
+
+fig
+```
+
+# 11. Reproducibility Record
+
+```{julia}
+println("Input surveys:")
+for path in survey_paths
+    println("  ", abspath(path))
+end
+
+println()
+println("Fitted targets: ", length(fitted_targets))
+println("Optimization converged: ", Optim.converged(optimization_result))
+println("Initial sum of squares: ", initial_sum_of_squares)
+println("Fitted sum of squares: ", fitted_sum_of_squares)
+println()
+
+versioninfo()
+Pkg.project()
+```

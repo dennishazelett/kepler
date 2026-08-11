@@ -12,6 +12,7 @@ include("kepler/analysis/collection.jl")
 include("kepler/analysis/materialize_context.jl")
 include("kepler/analysis/compass.jl")
 include("kepler/analysis/cross-staff.jl")
+include("kepler/analysis/quadrant.jl")
 
 export AnalysisCollection
 export ObservationSpecificationKey
@@ -23,6 +24,6 @@ export lineage
 export materialize_context
 export derive_compass_true_azimuth
 export derive_cross_staff_nominal_separation
-
+export derive_quadrant_nominal_altitude
 
 end
