@@ -200,7 +200,7 @@ function assemble_analysis_data(
                 "Manifest observation table does not exist: $table_path",
             ))
 
-            observations = CSV.read(table_path, DataFrame)
+            observations = CSV.read(table_path, DataFrame; stringtype = String)
 
             hasproperty(observations, :source_table_id) && throw(ArgumentError(
                 "Canonical observation table already contains reserved column " *
