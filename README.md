@@ -152,7 +152,8 @@ The repository is organized around the measurement process rather than around a 
 | [`src/`](src/) | Core software utilities |
 | [`inference/`](inference/) | Statistical and machine learning methods |
 | [`course/`](course/) | Educational materials |
-| [`tests/`](tests/) | Validation and reproducibility tests |
+| [`test/`](test/) | Julia test suite |
+| [`python-tests/`](python-tests/) | Python validation and reproducibility tests |
 | [`experiments/`](experiments/) | Benchmarks, ablations, model-recovery studies, and controlled computational experiments |
 | [`investigations/`](investigations/) | Foundational and claim investigations, including project-specific guidance and analyses |
 | [`workflows/`](workflows/) | Reference workflows for composing Kepler data, software, and inference components |

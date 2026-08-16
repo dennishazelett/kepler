@@ -155,7 +155,8 @@ El repositorio está organizado alrededor del proceso de medición, y no alreded
 | [`src/`](src/) | Utilidades principales de software |
 | [`inference/`](inference/) | Métodos estadísticos y de aprendizaje automático |
 | [`course/`](course/) | Materiales educativos |
-| [`tests/`](tests/) | Pruebas de validación y reproducibilidad |
+| [`test/`](test/) | Suite de pruebas de Julia |
+| [`python-tests/`](python-tests/) | Pruebas de validación y reproducibilidad en Python |
 | [`experiments/`](experiments/) | Benchmarks, estudios de ablación, recuperación de modelos y experimentos computacionales controlados |
 | [`investigations/`](investigations/) | Investigaciones fundacionales y de afirmaciones, incluyendo orientación y análisis específicos de cada proyecto |
 | [`workflows/`](workflows/) | Flujos de trabajo de referencia para combinar datos, software y componentes inferenciales de Kepler |

@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kepler.example.org/schemas/declared-survey-package-validation-report.schema.json",
+  "title": "Kepler declared survey-package validation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_format",
+    "report_version",
+    "validator",
+    "profile",
+    "package",
+    "status",
+    "summary",
+    "findings"
+  ],
+  "properties": {
+    "report_format": {
+      "const": "kepler.declared-survey-package-validation-report"
+    },
+    "report_version": {
+      "const": "1.0.0"
+    },
+    "validator": {
+      "$ref": "#/$defs/validatorIdentity"
+    },
+    "profile": {
+      "$ref": "#/$defs/profileIdentity"
+    },
+    "package": {
+      "$ref": "#/$defs/packageIdentity"
+    },
+    "status": {
+      "enum": ["valid", "invalid"]
+    },
+    "summary": {
+      "$ref": "#/$defs/validationSummary"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    }
+  },
+  "$defs": {
+    "validatorIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {
+          "const": "validate-survey.py"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "profileIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "content_sha256"],
+      "properties": {
+        "id": {
+          "const": "kepler-survey-package-registration-v1"
+        },
+        "version": {
+          "const": "1.0.0"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "packageIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["survey_id", "content_sha256"],
+      "properties": {
+        "survey_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "validationSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["error_count", "warning_count"],
+      "properties": {
+        "error_count": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "warning_count": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "code", "message"],
+      "properties": {
+        "severity": {
+          "enum": ["error", "warning"]
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "$ref": "#/$defs/findingLocation"
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "findingLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path"],
+      "properties": {
+        "relative_path": {
+          "$ref": "#/$defs/posixRelativePath"
+        },
+        "row_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "json_pointer": {
+          "type": "string",
+          "pattern": "^(?:$|/.*)$"
+        }
+      }
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nonnegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "posixRelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  }
+}

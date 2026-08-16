@@ -1,0 +1,46 @@
+{
+  "profile_id": "kepler-survey-package-registration-v1",
+  "profile_version": "1.0.0",
+  "description": "Mechanical derivation rules for Kepler survey-package registry records. This profile does not classify observed objects, define coverage, evaluate scientific adequacy, or impose an analysis model.",
+  "target_identity_normalization": "trim_only_v1",
+  "package_digest_canonicalization": "kepler-survey-package-digest-v1",
+
+  "required_survey_validation": {
+    "validator": {
+      "name": "validate-survey.py",
+      "version": "0.4.1"
+    },
+    "required_archive_status": "valid_canonical_archive",
+    "required_submission_ready": true
+  },
+
+  "observation_specifications": {
+    "compass-observation": {
+      "target_field_sets": [
+        ["target_name"]
+      ],
+      "observed_at_field": "observed_at",
+      "derived_utc_extent_allowed": "only_offset_aware_date_time"
+    },
+
+    "quadrant-observation": {
+      "target_field_sets": [
+        ["target_id"]
+      ],
+      "observed_at_field": "observed_at",
+      "derived_utc_extent_allowed": "only_offset_aware_date_time"
+    },
+
+    "cross-staff-observation": {
+      "target_field_sets": [
+        ["calibration.target_id"],
+        [
+          "field_observation.primary_target_id",
+          "field_observation.secondary_target_id"
+        ]
+      ],
+      "observed_at_field": "observed_at",
+      "derived_utc_extent_allowed": "only_offset_aware_date_time"
+    }
+  }
+}

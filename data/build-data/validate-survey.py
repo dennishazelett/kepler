@@ -36,7 +36,11 @@ except ImportError as exc:  # pragma: no cover
 SURVEY_SCHEMA_FILENAME = "survey.schema.json"
 VALIDATION_LOG_FILENAME = "validation.log"
 CHECKSUM_FILENAME = "checksums.sha256"
-VALIDATOR_VERSION = "0.4.0"
+GENERATED_REGISTRATION_ARTIFACT_FILENAMES = {
+    "registry.json",
+    "validation-report.json",
+}
+VALIDATOR_VERSION = "0.4.1"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -281,7 +285,11 @@ def parse_checksums(path: Path) -> tuple[dict[str, str], list[str]]:
 
 
 def iter_archive_files(survey_dir: Path) -> Iterable[Path]:
-    excluded = {CHECKSUM_FILENAME, VALIDATION_LOG_FILENAME}
+    excluded = {
+        CHECKSUM_FILENAME,
+        VALIDATION_LOG_FILENAME,
+        *GENERATED_REGISTRATION_ARTIFACT_FILENAMES,
+    }
     for path in survey_dir.rglob("*"):
         if path.is_file() and path.name not in excluded:
             yield path
