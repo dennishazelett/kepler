@@ -147,7 +147,7 @@ Por ejemplo:
 
 - una separación angular restringe las posiciones relativas de dos objetos.
 
-![**Figura 1:** Los instrumentos de Kepler miden fenómenos observables locales, como la altura y el acimut.](images/great-circles.svg){width="4in"}
+![**Figura 1:** Los instrumentos de Kepler miden fenómenos observables locales, como la altura y el acimut.](images/great-circles.svg){width="6in"}
 
 Ninguna observación individual determina completamente el estado latente.
 
