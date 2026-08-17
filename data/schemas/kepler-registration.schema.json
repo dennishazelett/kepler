@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dennishazelett/kepler/blob/main/data/schemas/kepler-registration.schema.json",
+  "title": "Kepler Central Survey Registration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "registration_format",
+    "registration_version",
+    "registration_status",
+    "package",
+    "source_snapshot",
+    "artifacts"
+  ],
+  "properties": {
+    "registration_format": {
+      "const": "kepler.survey-registration"
+    },
+    "registration_version": {
+      "const": "1.0.0"
+    },
+    "registration_status": {
+      "const": "registered"
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["survey_id", "content_sha256"],
+      "properties": {
+        "survey_id": {
+          "type": "string",
+          "pattern": "^SUR-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "source_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_url",
+        "commit_sha",
+        "package_relative_path"
+      ],
+      "properties": {
+        "repository_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "package_relative_path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\.\\.)(?!.*//).+$"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "copied_registry_record",
+        "copied_validation_report",
+        "registry_json_sha256",
+        "validation_report_json_sha256"
+      ],
+      "properties": {
+        "copied_registry_record": {
+          "const": "registry.json"
+        },
+        "copied_validation_report": {
+          "const": "validation-report.json"
+        },
+        "registry_json_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "validation_report_json_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  }
+}
