@@ -1,0 +1,56 @@
+{
+  "findings": [
+    {
+      "code": "UNDECLARED_PACKAGE_FILE",
+      "location": {
+        "relative_path": "README.md"
+      },
+      "message": "File is not declared by survey.json and is excluded from package identity.",
+      "severity": "warning"
+    },
+    {
+      "code": "UNDECLARED_PACKAGE_FILE",
+      "location": {
+        "relative_path": "checksums.sha256"
+      },
+      "message": "File is not declared by survey.json and is excluded from package identity.",
+      "severity": "warning"
+    },
+    {
+      "code": "UNDECLARED_PACKAGE_FILE",
+      "location": {
+        "relative_path": "notes.csv"
+      },
+      "message": "File is not declared by survey.json and is excluded from package identity.",
+      "severity": "warning"
+    },
+    {
+      "code": "UNDECLARED_PACKAGE_FILE",
+      "location": {
+        "relative_path": "validation.log"
+      },
+      "message": "File is not declared by survey.json and is excluded from package identity.",
+      "severity": "warning"
+    }
+  ],
+  "package": {
+    "content_sha256": "7867e2eb27dbc3658ae62adeb287d8d83ecb87801b2090f41b586c8b4093754a",
+    "survey_id": "SUR-PIL-2026-002"
+  },
+  "profile": {
+    "content_sha256": "0dc90643fab734f4fcd3a7228aaf9e1788725f038acdb48eb611ed680b52eb38",
+    "id": "kepler-survey-package-registration-v1",
+    "version": "1.0.0"
+  },
+  "report_format": "kepler.declared-survey-package-validation-report",
+  "report_version": "1.0.0",
+  "status": "valid",
+  "summary": {
+    "error_count": 0,
+    "warning_count": 4
+  },
+  "validator": {
+    "name": "validate-survey.py",
+    "version": "0.4.1"
+  }
+}

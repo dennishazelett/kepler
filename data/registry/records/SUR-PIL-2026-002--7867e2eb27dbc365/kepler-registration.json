@@ -1,0 +1,20 @@
+{
+  "artifacts": {
+    "copied_registry_record": "registry.json",
+    "copied_validation_report": "validation-report.json",
+    "registry_json_sha256": "56327662cae39f7899055a933f23d1f44f306badf26399bb4f800ba07339bccd",
+    "validation_report_json_sha256": "acc5e19ef0d581c2a260ceaf00b67bbcd3b3c9a2c12034068bf2a1eeb2fb1d9b"
+  },
+  "package": {
+    "content_sha256": "7867e2eb27dbc3658ae62adeb287d8d83ecb87801b2090f41b586c8b4093754a",
+    "survey_id": "SUR-PIL-2026-002"
+  },
+  "registration_format": "kepler.survey-registration",
+  "registration_status": "registered",
+  "registration_version": "1.0.0",
+  "source_snapshot": {
+    "commit_sha": "98157ac793870e7e35b434b3cdba9842fc6ee3dc",
+    "package_relative_path": "surveys/SUR-PIL-2026-002-canonical",
+    "repository_url": "https://github.com/dennishazelett/kepler-research-records"
+  }
+}

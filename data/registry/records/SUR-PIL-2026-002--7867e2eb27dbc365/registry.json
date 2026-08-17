@@ -1,0 +1,107 @@
+{
+  "package": {
+    "content_sha256": "7867e2eb27dbc3658ae62adeb287d8d83ecb87801b2090f41b586c8b4093754a",
+    "survey_id": "SUR-PIL-2026-002"
+  },
+  "record_format": "kepler.survey-package-registration",
+  "record_version": "1.0.0",
+  "sampling_summary": {
+    "observation_count": 37,
+    "observation_tables": [
+      {
+        "instrument_instance_id": "INS-0001",
+        "observation_count": 19,
+        "observation_specification": {
+          "name": "cross-staff-observation",
+          "version": "0.3"
+        },
+        "relative_path": "observations/cross-staff-observation.csv"
+      },
+      {
+        "instrument_instance_id": "INS-0002",
+        "observation_count": 9,
+        "observation_specification": {
+          "name": "quadrant-observation",
+          "version": "UNSPECIFIED"
+        },
+        "relative_path": "observations/quadrant-observation.csv"
+      },
+      {
+        "instrument_instance_id": "INS-0005",
+        "observation_count": 9,
+        "observation_specification": {
+          "name": "compass-observation",
+          "version": "UNSPECIFIED"
+        },
+        "relative_path": "observations/compass-observation.csv"
+      }
+    ],
+    "summary_derivation": {
+      "generator": {
+        "name": "generate-registry-record.py",
+        "version": "1.0.0"
+      },
+      "profile_id": "kepler-survey-package-registration-v1",
+      "profile_version": "1.0.0",
+      "source_manifest": {
+        "observation_table_manifest_field": "observation_tables",
+        "relative_path": "survey.json"
+      },
+      "target_identity_normalization": "trim_only_v1"
+    },
+    "target_count": 9,
+    "target_reference_count": 56,
+    "targets": [
+      {
+        "observation_reference_count": 8,
+        "target_id": "Alioth"
+      },
+      {
+        "observation_reference_count": 7,
+        "target_id": "Alkaid"
+      },
+      {
+        "observation_reference_count": 5,
+        "target_id": "Dubhe"
+      },
+      {
+        "observation_reference_count": 6,
+        "target_id": "Kochab"
+      },
+      {
+        "observation_reference_count": 6,
+        "target_id": "Megrez"
+      },
+      {
+        "observation_reference_count": 6,
+        "target_id": "Merok"
+      },
+      {
+        "observation_reference_count": 6,
+        "target_id": "Mizar"
+      },
+      {
+        "observation_reference_count": 8,
+        "target_id": "Phecda"
+      },
+      {
+        "observation_reference_count": 4,
+        "target_id": "Polaris"
+      }
+    ],
+    "temporal_extent": {
+      "ended_at": "2026-07-28T05:35:52Z",
+      "provenance": {
+        "method": "contributor_declared_survey_interval",
+        "source": "survey.json"
+      },
+      "started_at": "2026-07-28T04:13:30Z",
+      "status": "available"
+    }
+  },
+  "validation_report": {
+    "format": "kepler.validation-report+json",
+    "relative_path": "validation-report.json",
+    "schema_version": "1.0.0"
+  }
+}
