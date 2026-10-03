@@ -1,168 +1,252 @@
-# Celestial Coordinate Systems
+# Kepler Glossary
 
 ## Purpose
 
-To make scientific observations, we must be able to describe where an object appears in the sky.
+This glossary defines terms used with specific meanings in Kepler.
 
-Celestial coordinate systems provide a common language for recording those positions.
+It is a reference for participants, educators, contributors, translators, and
+maintainers. It supports consistent interpretation across the project’s
+scientific, educational, data, and software documentation.
 
-Understanding these systems is essential because astronomical instruments do not measure "coordinates." They measure observable quantities that can be used to infer coordinates.
+This glossary does not replace the project charter, measurement model, data
+specifications, protocols, instrument guides, or investigations. Those
+documents remain the authoritative sources for the project’s principles,
+methods, requirements, and procedures.
 
----
+## How to use this glossary
 
-# The Problem
+Entries define how a term should be understood when it appears in Kepler
+documentation.
 
-Suppose someone points to a bright star and says:
-
-> "It's over there."
-
-The description is meaningful only to someone standing in the same place at the same time.
-
-Scientific observations require a description that can be communicated, reproduced, and compared across observers.
-
-A coordinate system solves this problem.
-
----
-
-# The Celestial Sphere
-
-The celestial sphere is an imaginary sphere of arbitrarily large radius centered on the observer.
-
-Every visible celestial object is projected onto this sphere.
-
-Although stars lie at vastly different distances, they appear as points on the celestial sphere when describing their directions.
-
-The celestial sphere is therefore a geometric model rather than a physical object.
+Where a term has a broader disciplinary or everyday meaning, the definition
+below identifies its intended Kepler meaning. Related documents provide fuller
+explanations, methods, and technical detail.
 
 ---
 
-# The Horizontal Coordinate System
+## Analysis
 
-The most intuitive coordinate system is based on the observer.
+In Kepler, analysis is reproducible work that examines observations or other
+documented inputs to produce descriptive, comparative, inferential, or
+predictive results.
 
-Two coordinates describe every visible object.
+Analysis may include calculation, visualization, statistical modeling, machine
+learning, simulation, or qualitative interpretation. Its outputs are derived
+from documented inputs and should remain distinguishable from the original
+observations.
 
-## Altitude
+See also: [Derived quantity](#derived-quantity),
+[Inference](#inference), [Model](#model).
 
-Altitude is the angle above the local horizon.
+## Calibration
 
-- Horizon = 0°
-- Zenith (directly overhead) = 90°
+In Kepler, calibration is the empirical characterization of how an
+observer--instrument measurement system behaves under known or otherwise
+well-characterized conditions.
 
-Altitude answers:
+Calibration does not erase or replace original observations. It produces
+information that may help interpret measurements, characterize uncertainty, or
+support later analysis.
 
-> How high above the horizon is the object?
+See also: [Instrument](#instrument), [Measurement](#measurement),
+[Observer](#observer), [Uncertainty](#uncertainty).
 
----
+## Dataset
 
-## Azimuth
+In Kepler, a dataset is a structured collection of observations and associated
+records that supports reuse, comparison, analysis, and scientific inquiry.
 
-Azimuth measures direction around the horizon.
+A Kepler dataset represents both observations of the sky and information about
+the measurement process that produced them, including relevant observers,
+instruments, protocols, surveys, and metadata.
 
-It answers:
+See also: [Metadata](#metadata), [Observation](#observation),
+[Provenance](#provenance), [Survey](#survey).
 
-> Which direction should I face?
+## Derived quantity
 
-The exact convention varies, but Kepler will adopt a single published convention for all observations.
+In Kepler, a derived quantity is a value produced from one or more observations
+through calculation, transformation, calibration, simulation, modeling, or
+inference.
 
----
+Derived quantities may be scientifically valuable, but they do not replace the
+observations from which they were produced. Coordinates, residuals, predictions,
+and fitted parameters are examples of derived quantities.
 
-## Advantages
+See also: [Analysis](#analysis), [Inference](#inference),
+[Observation](#observation).
 
-- Easy to understand.
-- Directly related to observation.
-- Natural for many simple instruments.
+## Inference
 
----
+In Kepler, inference is the process of using observations and explicit
+assumptions to constrain, compare, or estimate unknown states, explanations,
+relationships, or claims.
 
-## Limitations
+Kepler treats individual measurements as constraints on possible explanations,
+not as direct and complete access to the physical world. Multiple inferential
+methods may be used to examine the same observations.
 
-The horizontal coordinate system depends on:
+See also: [Latent state](#latent-state), [Model](#model),
+[Observation](#observation), [Uncertainty](#uncertainty).
 
-- observer location;
-- observation time.
+## Instrument
 
-As the Earth rotates, the coordinates of every celestial object continually change.
+In Kepler, an instrument is a physical system used to transform features of the
+observable sky into quantities that can be measured and recorded.
 
-The same star therefore has different horizontal coordinates throughout the night.
+An instrument is part of the measurement process. Its design, construction,
+configuration, calibration history, and limitations can affect the observations
+it helps produce.
 
----
+See also: [Calibration](#calibration), [Measurement](#measurement),
+[Measurement process](#measurement-process).
 
-# The Equatorial Coordinate System
+## Latent state
 
-Astronomers often require a coordinate system that does not depend on the observer's local horizon.
+In Kepler, the latent state is the underlying physical state of the world that
+exists independently of an observer but cannot be observed directly in full.
 
-Instead, they project Earth's rotation axis and equator onto the celestial sphere.
+Examples include the positions and motions of celestial objects. Observations
+provide constraints on the latent state; inference combines those constraints
+with explicit assumptions to develop and evaluate explanations.
 
-This produces the equatorial coordinate system.
+See also: [Inference](#inference), [Observable sky](#observable-sky),
+[Observation](#observation).
 
----
+## Measurement
 
-## Declination
+In Kepler, a measurement is the act or result of determining a quantity from
+the observable sky, ordinarily by an observer using an instrument under
+particular conditions.
 
-Declination is analogous to geographic latitude.
+A measurement may be imperfect, but its imperfections are part of the
+scientific information that Kepler seeks to characterize rather than conceal.
+When preserved with the context needed to interpret how it was produced, a
+measurement becomes an observation.
 
-It measures how far north or south of the celestial equator an object lies.
+See also: [Observation](#observation), [Observer](#observer),
+[Uncertainty](#uncertainty).
 
-Declination is measured in degrees.
+## Measurement process
 
----
+In Kepler, the measurement process is the complete causal pathway through which
+a physical state becomes a recorded observation and, later, a possible basis for
+inference.
 
-## Right Ascension
+It includes the physical world, the observable sky, the instrument, the
+observer, the act of measurement, and the contextual information required to
+interpret the resulting record.
 
-Right ascension is analogous to geographic longitude.
+See also: [Instrument](#instrument), [Metadata](#metadata),
+[Observation](#observation), [Observable sky](#observable-sky).
 
-Instead of degrees, it is traditionally measured in hours, minutes, and seconds.
+## Metadata
 
-Twenty-four hours of right ascension correspond to one complete rotation around the celestial equator.
+In Kepler, metadata is information that describes the context, origin,
+structure, or interpretation of an observation, survey, dataset, or derived
+result.
 
----
+Metadata may include observation time, location, observer, instrument,
+protocol, units, calibration context, schema version, and other information
+needed to interpret, compare, reproduce, or reuse scientific records.
 
-## Advantages
+See also: [Observation](#observation), [Protocol](#protocol),
+[Provenance](#provenance), [Survey](#survey).
 
-Unlike horizontal coordinates, equatorial coordinates remain essentially fixed for celestial objects over ordinary observing times.
+## Model
 
-They provide a common reference system for astronomical catalogs and maps.
+In Kepler, a model is an explicit representation of assumptions about a system,
+measurement process, or relationship that can be used to reason from evidence.
 
----
+Models connect observations, hypotheses, explanations, and predictions. They
+are tools for thinking and comparison, rather than direct equivalents of
+reality or final repositories of truth.
 
-# Instruments and Coordinates
+See also: [Inference](#inference), [Latent state](#latent-state),
+[Uncertainty](#uncertainty).
 
-Different astronomical instruments measure different physical quantities.
+## Observable sky
 
-For example:
+In Kepler, the observable sky is the apparent sky available to an observer at a
+particular location and time under particular viewing conditions.
 
-| Instrument | Direct measurement |
-|------------|--------------------|
-| Cross-staff | Angular separation |
-| Quadrant | Altitude |
-| Gnomon | Solar altitude from shadow geometry |
-| Telescope | Direction of pointing |
+It connects the physical state of the Solar System to the measurements a
+participant can make. It is shaped by factors including location, time, Earth’s
+rotation, atmospheric effects, horizon obstruction, and visibility conditions.
 
-These measurements are not themselves celestial coordinates.
+See also: [Latent state](#latent-state), [Measurement process](#measurement-process),
+[Observation](#observation).
 
-Instead, they provide information from which celestial coordinates may be inferred.
+## Observation
 
----
+In Kepler, an observation is an immutable primary record of an act or result of
+measurement, preserved with the context needed to interpret how it was
+produced.
 
-# Kepler
+An observation preserves what was recorded, together with the information
+needed to interpret how it was produced. It is not a conclusion, corrected
+value, coordinate estimate, prediction, fitted parameter, or other derived
+result.
 
-Kepler is interested in the complete scientific process.
+See also: [Derived quantity](#derived-quantity), [Measurement](#measurement),
+[Metadata](#metadata), [Provenance](#provenance).
 
-Rather than beginning with celestial coordinates, the project begins with observations.
+## Observer
 
-```text
-Sky
-    ↓
-Instrument
-    ↓
-Measurement
-    ↓
-Coordinate inference
-    ↓
-Scientific inference
-```
+In Kepler, an observer is a person who participates in the measurement process
+by using an instrument, making judgments, recording observations, or otherwise
+contributing directly to the generation of scientific evidence.
 
-Understanding how measurements become coordinates is one of the central themes of the project.
+Observer experience, technique, consistency, and decisions may influence
+measurement. Kepler treats this variability as part of the measurement process
+to document and study, rather than as information to discard.
 
-Future documents describe the geometry, calibration procedures, and inference methods that connect raw observations to the celestial coordinate system.
+See also: [Instrument](#instrument), [Measurement](#measurement),
+[Measurement process](#measurement-process).
+
+## Protocol
+
+In Kepler, a protocol is a documented and repeatable procedure for carrying out
+a defined part of scientific work, especially observation, measurement,
+calibration, recording, or validation.
+
+Protocols make independently collected observations more interpretable and
+interoperable. They standardize aspects of evidence collection, but do not
+prescribe a single scientific question, analysis, or conclusion.
+
+See also: [Metadata](#metadata), [Survey](#survey),
+[Validation](#validation).
+
+## Provenance
+
+In Kepler, provenance is the documented history and traceable relationships
+that connect a scientific record or result to the observations, observers,
+instruments, protocols, surveys, transformations, and analyses from which it
+arose.
+
+Provenance allows others to examine how a result was produced, reproduce
+documented steps, assess limitations, and distinguish primary observations from
+derived products.
+
+See also: [Metadata](#metadata), [Observation](#observation),
+[Reproducibility](#reproducibility).
+
+## Reproducibility
+
+In Kepler, reproducibility is the capacity for another person to inspect,
+understand, and repeat a documented scientific workflow using its recorded
+observations, metadata, methods, assumptions, and computational materials.
+
+Reproducibility does not require identical observations under changed
+conditions or guarantee identical conclusions. It requires sufficient
+documentation and provenance to evaluate how evidence was transformed into a
+result.
+
+See also: [Analysis](#analysis), [Metadata](#metadata),
+[Provenance](#provenance).
+
+## Survey
+
+In Kepler, a survey is the primary unit of scientific contribution: a coherent
+collection of observations assembled to address a shared scientific purpose
+within
