@@ -5,6 +5,7 @@
 
 - 🇺🇸 [English](README.md)
 - 🇪🇸 Español (este documento)
+- 🇨🇳 [简体中文](README.zh.md)
 
 > **Nota:** Este documento es una traducción del README canónico en inglés. Los nombres de archivos, directorios y otros identificadores del repositorio permanecen en inglés para preservar enlaces estables y una estructura uniforme.
 

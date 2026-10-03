@@ -4,6 +4,7 @@
 
 - 🇺🇸 English (this document)
 - 🇪🇸 [Español](README.es.md)
+- 🇨🇳 [简体中文](README.zh.md)
 
 # **Learning science by doing science.**
 
